@@ -6,19 +6,23 @@ using UnityEngine.SceneManagement;
 
 public class WindowManager : MonoBehaviour
 {
+    /* 싱글톤 변수 */
     public static WindowManager instance = null; // 싱글톤 변수
 
+    /* WinAPI 상수 및 함수 */
     const int HWND_TOPMOST = -1;        // 항상 위에
     const int HWND_NOTOPMOST = -2;      // 항상 위에 아님
     const uint SWP_NOMOVE = 0x0002;     // 위치 유지
     const uint SWP_NOSIZE = 0x0001;     // 크기 유지
     const uint SWP_SHOWWINDOW = 0x0040; // 창 보이기
 
+    /* WinAPI 함수 */
     [DllImport("user32.dll", SetLastError = true)]
     static extern IntPtr GetActiveWindow(); // 현재 활성 창 핸들 가져오기
     [DllImport("user32.dll", SetLastError = true)]
     static extern bool SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+    /* 화면 설정 변수 */
 #pragma warning disable CS0414 // 사용 안하는 변수 경고 무시
     [Header("화면 설정")]
     [SerializeField, Range(0, 10000)]
