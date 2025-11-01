@@ -2,9 +2,12 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WindowManager : MonoBehaviour
 {
+    public static WindowManager instance = null; // 싱글톤 변수
+
     const int HWND_TOPMOST = -1;        // 항상 위에
     const int HWND_NOTOPMOST = -2;      // 항상 위에 아님
     const uint SWP_NOMOVE = 0x0002;     // 위치 유지
@@ -19,14 +22,62 @@ public class WindowManager : MonoBehaviour
 #pragma warning disable CS0414 // 사용 안하는 변수 경고 무시
     [Header("화면 설정")]
     [SerializeField, Range(0, 10000)]
-    private int screenX = 320;
+    private int timerScreenX = 320;
     [SerializeField, Range(0, 10000)]
-    private int screenY = 100;
+    private int timerScreenY = 100;
+    [SerializeField, Range(0, 10000)]
+    private int roomScreenX = 500;
+    [SerializeField, Range(0, 10000)]
+    private int roomScreenY = 300;
     [SerializeField]
-    bool bTopMost = true;
+    private bool bTopMost = true;
 #pragma warning restore CS0414
 
+    [Header("씬 이름 설정")]
+    [SerializeField]
+    private string timerSceneName = "WindowTestScene";
+    [SerializeField]
+    private string roomSceneName = "WindowChangeTestScene";
+
+    void Awake()
+    {
+        // 싱글톤 설정
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(WindowManager.instance.gameObject);
+
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
     void Start()
+    {
+        WindowSetting(GetCurrentSceneScreenX(), GetCurrentSceneScreenY());
+    }
+
+    private void OnEnable()
+    {
+        // 씬 로드 후 항상 위 적용
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 씬이 바뀐 후 항상 위 적용
+        WindowSetting(GetCurrentSceneScreenX(), GetCurrentSceneScreenY());
+    }
+
+    private void WindowSetting(int width, int height)
     {
 #if UNITY_EDITOR
         EditorUtility.DisplayDialog("WindowManager 비활성화",
@@ -35,25 +86,43 @@ public class WindowManager : MonoBehaviour
         return; // 에디터에서는 실행 안함
 
 #elif UNITY_STANDALONE_WIN
-        // 창 크기/모드 설정
-        Screen.SetResolution(screenX, screenY, false); // screenX x screenY, 창모드
+        // 화면 크기 적용
+        Screen.SetResolution(width, height, false);
 
+        // 항상 위 적용
         IntPtr handle = GetActiveWindow();
         if (bTopMost)
         {
-            // 항상 위에, 위치/크기 유지
             SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
         }
         else
         {
-            // 항상 위에x, 위치/크기 유지
             SetWindowPos(handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
         }
 #endif
     }
 
-    void Update()
+    private int GetCurrentSceneScreenX()
     {
-        
+        return SceneManager.GetActiveScene().name == timerSceneName ? timerScreenX : roomScreenX;
+    }
+
+    private int GetCurrentSceneScreenY()
+    {
+        return SceneManager.GetActiveScene().name == timerSceneName ? timerScreenY : roomScreenY;
+    }
+
+    public void ChangeScene()
+    {
+        if (SceneManager.GetActiveScene().name == timerSceneName) // 현재 타이머 씬이면
+        {
+            SceneManager.LoadScene(roomSceneName);
+            Screen.SetResolution(roomScreenX, roomScreenY, false);
+        }
+        else // 현재 방 씬이면
+        {
+            SceneManager.LoadScene(timerSceneName);
+            Screen.SetResolution(timerScreenX, timerScreenY, false);
+        }
     }
 }
