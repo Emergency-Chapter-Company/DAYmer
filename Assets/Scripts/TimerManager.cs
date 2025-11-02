@@ -17,13 +17,19 @@ public class TimerManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI pauseButtonText;
     [SerializeField] private TextMeshProUGUI stopButtonText;
 
+    [Header("Record UI")]
+    [SerializeField] private Transform recordsContent;           // 기록이 추가될 Content
+    [SerializeField] private GameObject recordItemPrefab;        // RecordItem 프리팹
+    [SerializeField] private Button clearAllButton;                  // 전체 기록 삭제 버튼
+
     // 타이머 상태
     private float currentTime = 0f;   // 현재 경과 시간
     private bool isRunning = false;   // 실행 중 여부
     private bool isPaused = false;    // 일시정지 여부
 
     // 기록 관리 (일단은 콘솔만 출력)
-    private List<TimeRecord> timeRecords = new List<TimeRecord>();
+    private List<TimeRecord> timeRecords = new List<TimeRecord>();      // 실제 데이터
+    private List<GameObject> recordUIItems = new List<GameObject>();    // UI 아이템들
 
     private void Start()
     {
@@ -98,7 +104,12 @@ public class TimerManager : MonoBehaviour
             {
                 TimeRecord newRecord = new TimeRecord(currentTime);
                 timeRecords.Add(newRecord);
+
+                // 기록을 콘솔에 출력
                 Debug.Log($"기록 저장: {newRecord.recordTime}");
+
+                // UI에 기록 추가
+                AddRecordToUI(newRecord);
             }
 
             // 타이머 리셋
@@ -150,9 +161,113 @@ public class TimerManager : MonoBehaviour
             // 정지 버튼: 실행 중일 때만 활성화
             stopButton.interactable = isRunning;
         }
+        if (clearAllButton != null)
+        {
+            clearAllButton.onClick.AddListener(OnClearAllButtonClick);
+        }
     }
 
- 
+
+    /// UI에 기록 보이기
+    private void AddRecordToUI(TimeRecord record)
+    {
+        // null 체크
+        if (recordItemPrefab == null || recordsContent == null)
+        {
+            Debug.LogWarning("RecordItem 프리팹 또는 Content가 연결되지 않았습니다!");
+            return;
+        }
+
+        // 프리팹 복사해서 생성
+        GameObject recordItem = Instantiate(recordItemPrefab, recordsContent);
+        recordUIItems.Add(recordItem);
+
+        // 기록 번호와 시간 설정
+        TextMeshProUGUI recordText = recordItem.GetComponentInChildren<TextMeshProUGUI>();
+        if (recordText != null)
+        {
+            int recordNumber = timeRecords.Count;
+            recordText.text = $"#{recordNumber} - {record.recordTime}";
+        }
+
+        // 삭제 버튼 설정
+        Button deleteButton = recordItem.GetComponentInChildren<Button>();
+        if (deleteButton != null)
+        {
+            // 현재 recordItem을 캡처해서 람다에 전달
+            GameObject itemToDelete = recordItem;
+            deleteButton.onClick.AddListener(() => DeleteRecordUI(itemToDelete));
+        }
+
+        Debug.Log($"UI에 기록 추가됨: #{timeRecords.Count}");
+    }
+
+    /// 개별 기록 UI 삭제
+    private void DeleteRecordUI(GameObject recordItem)
+    {
+        if (recordItem != null && recordUIItems.Contains(recordItem))
+        {
+            int index = recordUIItems.IndexOf(recordItem);
+
+            // UI에서 제거
+            recordUIItems.Remove(recordItem);
+            Destroy(recordItem);
+
+            Debug.Log($"UI 기록 #{index + 1} 삭제 (데이터는 유지)");
+            Debug.Log($"남은 UI 기록 수: {recordUIItems.Count}");
+            Debug.Log($"실제 데이터 기록 수: {timeRecords.Count}");
+
+            // 번호 재정렬
+            RefreshRecordNumbers();
+        }
+    }
+
+    /// 전체 기록 UI 삭제
+    private void OnClearAllButtonClick()
+    {
+        // 모든 UI 아이템 삭제
+        foreach (GameObject item in recordUIItems)
+        {
+            if (item != null)
+            {
+                Destroy(item);
+            }
+        }
+        recordUIItems.Clear();
+
+        Debug.Log("=== 전체 UI 기록 삭제 ===");
+        Debug.Log($"UI 기록 수: {recordUIItems.Count}");
+        Debug.Log($"실제 데이터 기록 수: {timeRecords.Count} (유지됨)");
+        Debug.Log("========================");
+    }
+
+    /// 기록 번호 재정렬
+    private void RefreshRecordNumbers()
+    {
+        for (int i = 0; i < recordUIItems.Count; i++)
+        {
+            if (recordUIItems[i] != null)
+            {
+                TextMeshProUGUI recordText = recordUIItems[i].GetComponentInChildren<TextMeshProUGUI>();
+                if (recordText != null)
+                {
+                    // UI는 순서대로 #1, #2, #3...
+                    // 하지만 실제 데이터는 원래 인덱스 유지
+                    // 여기서는 UI 표시 번호만 바꿈
+                    string currentText = recordText.text;
+
+                    // 기존 시간 정보 추출 (- 이후 부분)
+                    int dashIndex = currentText.IndexOf(" - ");
+                    if (dashIndex > 0)
+                    {
+                        string timeInfo = currentText.Substring(dashIndex);
+                        recordText.text = $"#{i + 1}{timeInfo}";
+                    }
+                }
+            }
+        }
+    }
+
     /// 에디터에서 디버그용 정보 표시
     private void OnGUI()
     {
