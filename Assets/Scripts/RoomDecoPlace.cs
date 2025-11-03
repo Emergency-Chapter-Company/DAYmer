@@ -11,6 +11,13 @@ public class RoomDecoPlace : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private string floorSortingLayer = "Floor";
 
+    // 영역 구분 설정
+    [Header("Area Boundaries")]
+    [SerializeField] private float ceilingMinY = 1.5f;  // 천창 최소 Y좌표
+    [SerializeField] private float wallMaxY = 1.5f;     // 벽 최대 Y좌표
+    [SerializeField] private float wallMinY = -1.5f;    // 벽 최소 Y좌표
+    [SerializeField] private float floorMaxY = -1.5f;   // 바닥 최대 Y좌표
+
     private RoomDecoItem currentItem;
     private ItemData2D currentItemData;
     private bool isPlacing = false;
@@ -73,8 +80,11 @@ public class RoomDecoPlace : MonoBehaviour
 
     private void UpdateItemPosition()
     {
-        // 마우스 위치
+        // 마우스 위치 
         Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+
+        // 마우스 현재 위치의 영역 확인
+        ItemType currentArea = GetAreaType(mouseWorldPos);
 
         // 그리드 좌표 변환
         Vector2Int gridPos = gridSystem.WorldToGrid(mouseWorldPos);
@@ -109,6 +119,15 @@ public class RoomDecoPlace : MonoBehaviour
             return;
 
         Vector2Int gridPos = currentItem.GetGridPosition();
+        Vector2 worldPos = currentItem.transform.position;
+
+        // 올바른 영역-아이템 체크
+        ItemType currentArea = GetAreaType(worldPos);
+        if (currentArea != currentItemData.PlacementType)
+        {
+            Debug.Log($"아이템을 올바른 영역에 배치해야 합니다. 현재 영역: {currentArea}, 아이템 타입: {currentItemData.PlacementType}");
+            return;
+        }
 
         Debug.Log($"배치 시도 위치: {gridPos}, 타입 : {currentItemData.PlacementType}");
 
@@ -175,6 +194,16 @@ public class RoomDecoPlace : MonoBehaviour
         currentItem = null;
 
         Debug.Log("아이템 배치 취소");
+    }
+
+    private ItemType GetAreaType(Vector2 worldPos)
+    {
+        if (worldPos.y >= ceilingMinY)
+            return ItemType.Ceiling;
+        else if (worldPos.y <= floorMaxY)
+            return ItemType.Floor;
+        else
+            return ItemType.Wall;
     }
 
 
