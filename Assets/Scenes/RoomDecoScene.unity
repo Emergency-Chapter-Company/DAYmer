@@ -290,6 +290,8 @@ MonoBehaviour:
   mainCamera: {fileID: 519420031}
   testItems:
   - {fileID: 11400000, guid: 736dc60d1e16aba44b2ed657699947c0, type: 2}
+  - {fileID: 11400000, guid: 30f838095148e864ebad93afb4d137ad, type: 2}
+  - {fileID: 11400000, guid: 66136e39b241af9499b605f7043e7903, type: 2}
 --- !u!4 &350352562
 Transform:
   m_ObjectHideFlags: 0

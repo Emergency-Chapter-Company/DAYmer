@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // 2D 그리드 시스템
@@ -13,6 +14,9 @@ public class RoomDecoGrid : MonoBehaviour
     [Header("Visualization")]
     [SerializeField] private bool showGrid = true;
     [SerializeField] private Color gridColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+
+    [Header("Occupancy")]
+    private Dictionary<Vector2Int, ItemType> occupiedTiles = new Dictionary<Vector2Int, ItemType>();
 
     // 월드 => 그리드 좌표 계산
     public Vector2Int WorldToGrid(Vector2 worldPosition)
@@ -61,8 +65,30 @@ public class RoomDecoGrid : MonoBehaviour
         }
     }
 
+    // 그리드에 아이템 배치 여부확인
+    public bool IsTileOccupied(Vector2Int gridPos, ItemType itemType)
+    {
+        if(!occupiedTiles.ContainsKey(gridPos))
+            return false;
 
-        public int GetGridWidth() => gridWidth;
+        //같은 레이어에서만 중복 체크
+        return occupiedTiles[gridPos] == itemType;
+    }
+
+    // 그리드에 아이템 배치 등록
+    public void OccupyTile(Vector2Int gridPos, ItemType itemType)
+    {
+        occupiedTiles[gridPos] = itemType; 
+    }
+
+    // 그리드에서 아이템 배치 해제
+    public void FreeTile(Vector2Int gridPos)
+    {
+        occupiedTiles.Remove(gridPos);
+    }
+
+
+    public int GetGridWidth() => gridWidth;
         public int GetGridHeight() => gridHeight;
         public float GetTileSize() => tileSize;
 }

@@ -46,7 +46,7 @@ public class RoomDecoPlace : MonoBehaviour
         }
 
         //아이템 제거
-        if (currentItem != null && currentItem.IsPlaced())
+        if (currentItem != null)
         {
             Destroy(currentItem.gameObject);
         }
@@ -57,6 +57,7 @@ public class RoomDecoPlace : MonoBehaviour
         // 스프라이트 렌더러 추가
         SpriteRenderer sr = itemObj.AddComponent<SpriteRenderer>();
         sr.sprite = itemData.Sprite;
+        sr.color = itemData.ItemColor;
         sr.sortingLayerName = floorSortingLayer;
 
         // RoomDecoItem 추가
@@ -107,9 +108,28 @@ public class RoomDecoPlace : MonoBehaviour
         if (currentItem == null)
             return;
 
+        Vector2Int gridPos = currentItem.GetGridPosition();
+
+        Debug.Log($"배치 시도 위치: {gridPos}, 타입 : {currentItemData.PlacementType}");
+
+        // 중복 배치 체크
+        if (gridSystem.IsTileOccupied(gridPos, currentItemData.PlacementType))
+        {
+            Debug.Log("해당 위치에 이미 아이템이 배치되어 있습니다.");
+            return;
+        }
+
+
+
         currentItem.SetPlaced(true);
 
-        int sortingOrder = -(int)(currentItem.transform.position.y * 100);
+
+        // 배치 그리드 등록
+        gridSystem.OccupyTile(gridPos, currentItemData.PlacementType);
+
+        // 레이어 순서 (보이기 우선순위 : 천장 > 바닥 > 벽)
+
+        int sortingOrder = GetSortingOrder(currentItemData.PlacementType, currentItem.transform.position.y);
         currentItem.SetSortingOrder(sortingOrder);
 
         // 배치결과 전달
@@ -118,12 +138,29 @@ public class RoomDecoPlace : MonoBehaviour
             Manager.OnItemPlaced(currentItem);
         }
 
-        Debug.Log($"아이템 배치 완료: {currentItemData.ItemName} at {currentItem.GetGridPosition()}");
+        Debug.Log($"아이템 배치 완료: {currentItemData.ItemName} at {gridPos}");
 
         //배치 모드 종료
         currentItem = null;
         isPlacing = false;
         currentItemData = null;
+    }
+
+    private int GetSortingOrder(ItemType type, float yPos)
+    {
+        int baseOrder = -(int)(yPos * 100);
+
+        switch (type)
+        {
+            case ItemType.Ceiling:
+                return baseOrder + 200; // 천장 맨 위
+            case ItemType.Floor:
+                return baseOrder + 100; // 바닥 중간
+            case ItemType.Wall:
+                return baseOrder;       // 벽 맨 아래
+            default:
+                return baseOrder;
+        }
     }
 
     private void CancelPlacing()
@@ -139,6 +176,7 @@ public class RoomDecoPlace : MonoBehaviour
 
         Debug.Log("아이템 배치 취소");
     }
+
 
     public bool IsPlacing() => isPlacing;
 }

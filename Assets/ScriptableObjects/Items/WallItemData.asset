@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: TestItemData
+  m_Name: WallItemData
   m_EditorClassIdentifier: Assembly-CSharp::ItemData2D
-  itemName: TestItem01
-  itemID: 1
-  sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  placementType: 0
-  itemColor: {r: 0, g: 0.0064702034, b: 1, a: 1}
+  itemName: TestItem03
+  itemID: 3
+  sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  placementType: 1
+  itemColor: {r: 1, g: 1, b: 1, a: 1}

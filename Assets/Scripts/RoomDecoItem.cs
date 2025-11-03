@@ -9,11 +9,13 @@ public class ItemData2D : ScriptableObject
     [SerializeField] private int itemID = 0;
     [SerializeField] private Sprite sprite;
     [SerializeField] private ItemType placementType = ItemType.Floor;
+    [SerializeField] private Color itemColor = Color.white;
 
     public string ItemName => itemName;
     public int ItemID => itemID;
     public Sprite Sprite => sprite;
     public ItemType PlacementType => placementType;
+    public Color ItemColor => itemColor;
 }
 
 // 배치 가능 아이템 유형
