@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 // 아이템 배치 시스템
@@ -12,11 +13,12 @@ public class RoomDecoPlace : MonoBehaviour
     [SerializeField] private string floorSortingLayer = "Floor";
 
     // 영역 구분 설정
-    [Header("Area Boundaries")]
+    /*[Header("Area Boundaries")]
     [SerializeField] private float leftWallMinY = 0f;   // 왼쪽 벽 최소 Y좌표
     [SerializeField] private float leftWallMaxX = 5f;   // 왼쪽 벽 최대 X좌표
     [SerializeField] private float rightWallMaxY = 10f; // 오른쪽 벽 최소 Y좌표
     [SerializeField] private float rightWallMinX = 5f;   // 오른쪽 벽 최소 X좌표
+    */
 
     private RoomDecoItem currentItem;
     private ItemData2D currentItemData;
@@ -103,8 +105,8 @@ public class RoomDecoPlace : MonoBehaviour
         // Debug.Log($"마우스 월드 좌표: {mouseWorldPos}");
 
         // 마우스 현재 위치의 영역 확인
-        ItemType currentArea = GetAreaType(mouseWorldPos);
-        Debug.Log($"마우스 월드 좌표 : {mouseWorldPos}, 현재 영역: {currentArea}, 아이템 타입: {currentItemData.PlacementType}");
+        ItemType? currentArea = GetAreaType(mouseWorldPos);
+        //Debug.Log($"마우스 월드 좌표 : {mouseWorldPos}, 현재 영역: {currentArea}, 아이템 타입: {currentItemData.PlacementType}");
 
         // 현재 아이템 타입과 영역이 맞는지 확인
         Vector2Int gridPos = currentGrid.WorldToGrid(mouseWorldPos);
@@ -150,7 +152,7 @@ public class RoomDecoPlace : MonoBehaviour
         Vector2 worldPos = currentItem.transform.position;
 
         // 올바른 영역-아이템 체크
-        ItemType currentArea = GetAreaType(worldPos);
+        ItemType? currentArea = GetAreaType(worldPos);
         if (currentArea != currentItemData.PlacementType)
         {
             Debug.Log($"아이템을 올바른 영역에 배치해야 합니다. 현재 영역: {currentArea}, 아이템 타입: {currentItemData.PlacementType}");
@@ -234,7 +236,7 @@ public class RoomDecoPlace : MonoBehaviour
         Debug.Log("아이템 배치 취소");
     }
 
-    private ItemType GetAreaType(Vector2 worldPos)
+    private ItemType? GetAreaType(Vector2 worldPos)
     {
 
         // Y좌표와 X좌표로 영역 구분
@@ -244,16 +246,21 @@ public class RoomDecoPlace : MonoBehaviour
 
 
         // 왼쪽 벽 영역
-        if (worldPos.y >= leftWallMinY && worldPos.x <= leftWallMaxX)
+        if (worldPos.x >= -0.5f && worldPos.x <= 4.5f &&
+            worldPos.y >= 1f && worldPos.y <= 5f)
             return ItemType.LeftWall;
 
         // 오른쪽 벽 영역
-        else if (worldPos.y <= rightWallMaxY && worldPos.x >= rightWallMinX)
-            return ItemType.RightWall;
+        if (worldPos.x >= 4.5f && worldPos.x <= 9.5f &&
+            worldPos.y >= 1f && worldPos.y <= 5f)
+                return ItemType.RightWall;
 
         // 바닥 영역
-        else
+        if (worldPos.x >= 0f && worldPos.x <= 10f &&
+            worldPos.y >= -6f && worldPos.y <= 4f)
             return ItemType.Floor;
+
+        return null; // 해당 없음
     }
 
 

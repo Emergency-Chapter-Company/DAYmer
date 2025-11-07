@@ -865,10 +865,6 @@ MonoBehaviour:
   coreManager: {fileID: 350352561}
   mainCamera: {fileID: 519420031}
   floorSortingLayer: Floor
-  leftWallMinY: 1.5
-  leftWallMaxX: 3
-  rightWallMinY: 0
-  rightWallMinX: 7
 --- !u!4 &1647297686
 Transform:
   m_ObjectHideFlags: 0
