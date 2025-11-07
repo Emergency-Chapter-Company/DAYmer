@@ -3,14 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-/// Å¸ÀÌ¸Ó ÀüÃ¼ ±â´É
+/// íƒ€ì´ë¨¸ ì „ì²´ ê¸°ëŠ¥
 public class TimerManager : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI timeText;           // ½Ã°£ Ç¥½Ã ÅØ½ºÆ® (00:00:00)
-    [SerializeField] private Button startButton;                 // ½ÃÀÛ ¹öÆ°
-    [SerializeField] private Button pauseButton;                 // ÀÏ½ÃÁ¤Áö ¹öÆ°
-    [SerializeField] private Button stopButton;                  // Á¤Áö ¹× ±â·Ï ¹öÆ°
+    [SerializeField] private TextMeshProUGUI timeText;           // ì‹œê°„ í‘œì‹œ í…ìŠ¤íŠ¸ (00:00:00)
+    [SerializeField] private Button startButton;                 // ì‹œì‘ ë²„íŠ¼
+    [SerializeField] private Button pauseButton;                 // ì¼ì‹œì •ì§€ ë²„íŠ¼
+    [SerializeField] private Button stopButton;                  // ì •ì§€ ë° ê¸°ë¡ ë²„íŠ¼
 
     [Header("Button Texts")]
     [SerializeField] private TextMeshProUGUI startButtonText;
@@ -18,18 +18,18 @@ public class TimerManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI stopButtonText;
 
     [Header("Record UI")]
-    [SerializeField] private Transform recordsContent;           // ±â·ÏÀÌ Ãß°¡µÉ Content
-    [SerializeField] private GameObject recordItemPrefab;        // RecordItem ÇÁ¸®ÆÕ
-    [SerializeField] private Button clearAllButton;                  // ÀüÃ¼ ±â·Ï »èÁ¦ ¹öÆ°
+    [SerializeField] private Transform recordsContent;           // ê¸°ë¡ì´ ì¶”ê°€ë  Content
+    [SerializeField] private GameObject recordItemPrefab;        // RecordItem í”„ë¦¬íŒ¹
+    [SerializeField] private Button clearAllButton;                  // ì „ì²´ ê¸°ë¡ ì‚­ì œ ë²„íŠ¼
 
-    // Å¸ÀÌ¸Ó »óÅÂ
-    private float currentTime = 0f;   // ÇöÀç °æ°ú ½Ã°£
-    private bool isRunning = false;   // ½ÇÇà Áß ¿©ºÎ
-    private bool isPaused = false;    // ÀÏ½ÃÁ¤Áö ¿©ºÎ
+    // íƒ€ì´ë¨¸ ìƒíƒœ
+    private float currentTime = 0f;   // í˜„ì¬ ê²½ê³¼ ì‹œê°„
+    private bool isRunning = false;   // ì‹¤í–‰ ì¤‘ ì—¬ë¶€
+    private bool isPaused = false;    // ì¼ì‹œì •ì§€ ì—¬ë¶€
 
-    // ±â·Ï °ü¸® (ÀÏ´ÜÀº ÄÜ¼Ö¸¸ Ãâ·Â)
-    private List<TimeRecord> timeRecords = new List<TimeRecord>();      // ½ÇÁ¦ µ¥ÀÌÅÍ
-    private List<GameObject> recordUIItems = new List<GameObject>();    // UI ¾ÆÀÌÅÛµé
+    // ê¸°ë¡ ê´€ë¦¬ (ì¼ë‹¨ì€ ì½˜ì†”ë§Œ ì¶œë ¥)
+    private List<TimeRecord> timeRecords = new List<TimeRecord>();      // ì‹¤ì œ ë°ì´í„°
+    private List<GameObject> recordUIItems = new List<GameObject>();    // UI ì•„ì´í…œë“¤
 
     private void Start()
     {
@@ -40,7 +40,7 @@ public class TimerManager : MonoBehaviour
 
     private void Update()
     {
-        // Å¸ÀÌ¸Ó°¡ ½ÇÇà ÁßÀÌ°í ÀÏ½ÃÁ¤ÁöµÇÁö ¾Ê¾ÒÀ» ¶§¸¸ ½Ã°£ Áõ°¡
+        // íƒ€ì´ë¨¸ê°€ ì‹¤í–‰ ì¤‘ì´ê³  ì¼ì‹œì •ì§€ë˜ì§€ ì•Šì•˜ì„ ë•Œë§Œ ì‹œê°„ ì¦ê°€
         if (isRunning && !isPaused)
         {
             currentTime += Time.deltaTime;
@@ -48,8 +48,8 @@ public class TimerManager : MonoBehaviour
         }
     }
 
-    /// UI ÃÊ±âÈ­
-    /// ¹öÆ° ÀÌº¥Æ® ¸®½º³Ê ¼³Á¤
+    /// UI ì´ˆê¸°í™”
+    /// ë²„íŠ¼ ì´ë²¤íŠ¸ ë¦¬ìŠ¤ë„ˆ ì„¤ì •
     private void SetupButtonListeners()
     {
         if (startButton != null)
@@ -63,61 +63,61 @@ public class TimerManager : MonoBehaviour
 
     }
 
-    /// ½ÃÀÛ ¹öÆ° Å¬¸¯ ÀÌº¥Æ®
+    /// ì‹œì‘ ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸
     private void OnStartButtonClick()
     {
         if (!isRunning)
         {
-            // Ã³À½ ½ÃÀÛ
+            // ì²˜ìŒ ì‹œì‘
             isRunning = true;
             isPaused = false;
-            Debug.Log("Å¸ÀÌ¸Ó ½ÃÀÛ");
+            Debug.Log("íƒ€ì´ë¨¸ ì‹œì‘");
         }
         else if (isPaused)
         {
-            // ÀÏ½ÃÁ¤Áö »óÅÂ¿¡¼­ Àç°³
+            // ì¼ì‹œì •ì§€ ìƒíƒœì—ì„œ ì¬ê°œ
             isPaused = false;
-            Debug.Log("Å¸ÀÌ¸Ó Àç°³");
+            Debug.Log("íƒ€ì´ë¨¸ ì¬ê°œ");
         }
 
         UpdateButtonStates();
     }
 
-    /// ÀÏ½ÃÁ¤Áö ¹öÆ° Å¬¸¯ ÀÌº¥Æ®
+    /// ì¼ì‹œì •ì§€ ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸
     private void OnPauseButtonClick()
     {
         if (isRunning && !isPaused)
         {
             isPaused = true;
-            Debug.Log("Å¸ÀÌ¸Ó ÀÏ½ÃÁ¤Áö");
+            Debug.Log("íƒ€ì´ë¨¸ ì¼ì‹œì •ì§€");
             UpdateButtonStates();
         }
     }
 
-    /// Á¤Áö ¹öÆ° Å¬¸¯ ÀÌº¥Æ® (±â·Ï ÀúÀå ¹× ¸®¼Â)
+    /// ì •ì§€ ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸ (ê¸°ë¡ ì €ì¥ ë° ë¦¬ì…‹)
     private void OnStopButtonClick()
     {
         if (isRunning)
         {
-            // ÇöÀç ½Ã°£À» ±â·Ï
+            // í˜„ì¬ ì‹œê°„ì„ ê¸°ë¡
             if (currentTime > 0)
             {
                 TimeRecord newRecord = new TimeRecord(currentTime);
                 timeRecords.Add(newRecord);
 
-                // ±â·ÏÀ» ÄÜ¼Ö¿¡ Ãâ·Â
-                Debug.Log($"±â·Ï ÀúÀå: {newRecord.recordTime}");
+                // ê¸°ë¡ì„ ì½˜ì†”ì— ì¶œë ¥
+                Debug.Log($"ê¸°ë¡ ì €ì¥: {newRecord.recordTime}");
 
-                // UI¿¡ ±â·Ï Ãß°¡
+                // UIì— ê¸°ë¡ ì¶”ê°€
                 AddRecordToUI(newRecord);
             }
 
-            // Å¸ÀÌ¸Ó ¸®¼Â
+            // íƒ€ì´ë¨¸ ë¦¬ì…‹
             ResetStopwatch();
         }
     }
 
-    /// Å¸ÀÌ¸Ó ¸®¼Â
+    /// íƒ€ì´ë¨¸ ë¦¬ì…‹
     private void ResetStopwatch()
     {
         currentTime = 0f;
@@ -125,10 +125,10 @@ public class TimerManager : MonoBehaviour
         isPaused = false;
         UpdateTimeDisplay();
         UpdateButtonStates();
-        Debug.Log("Å¸ÀÌ¸Ó ¸®¼Â");
+        Debug.Log("íƒ€ì´ë¨¸ ë¦¬ì…‹");
     }
 
-    /// ½Ã°£ Ç¥½Ã ¾÷µ¥ÀÌÆ® (00:00:00 Çü½Ä)
+    /// ì‹œê°„ í‘œì‹œ ì—…ë°ì´íŠ¸ (00:00:00 í˜•ì‹)
     private void UpdateTimeDisplay()
     {
         if (timeText != null)
@@ -141,24 +141,24 @@ public class TimerManager : MonoBehaviour
         }
     }
 
-    /// ¹öÆ° »óÅÂ ¾÷µ¥ÀÌÆ® (È°¼ºÈ­/ºñÈ°¼ºÈ­)
+    /// ë²„íŠ¼ ìƒíƒœ ì—…ë°ì´íŠ¸ (í™œì„±í™”/ë¹„í™œì„±í™”)
     private void UpdateButtonStates()
     {
         if (startButton != null)
         {
-            // ½ÃÀÛ ¹öÆ°: ½ÇÇà ÁßÀÌ ¾Æ´Ï°Å³ª ÀÏ½ÃÁ¤Áö »óÅÂÀÏ ¶§ È°¼ºÈ­
+            // ì‹œì‘ ë²„íŠ¼: ì‹¤í–‰ ì¤‘ì´ ì•„ë‹ˆê±°ë‚˜ ì¼ì‹œì •ì§€ ìƒíƒœì¼ ë•Œ í™œì„±í™”
             startButton.interactable = !isRunning || isPaused;
         }
 
         if (pauseButton != null)
         {
-            // ÀÏ½ÃÁ¤Áö ¹öÆ°: ½ÇÇà ÁßÀÌ°í ÀÏ½ÃÁ¤ÁöµÇÁö ¾Ê¾ÒÀ» ¶§¸¸ È°¼ºÈ­
+            // ì¼ì‹œì •ì§€ ë²„íŠ¼: ì‹¤í–‰ ì¤‘ì´ê³  ì¼ì‹œì •ì§€ë˜ì§€ ì•Šì•˜ì„ ë•Œë§Œ í™œì„±í™”
             pauseButton.interactable = isRunning && !isPaused;
         }
 
         if (stopButton != null)
         {
-            // Á¤Áö ¹öÆ°: ½ÇÇà ÁßÀÏ ¶§¸¸ È°¼ºÈ­
+            // ì •ì§€ ë²„íŠ¼: ì‹¤í–‰ ì¤‘ì¼ ë•Œë§Œ í™œì„±í™”
             stopButton.interactable = isRunning;
         }
         if (clearAllButton != null)
@@ -168,21 +168,21 @@ public class TimerManager : MonoBehaviour
     }
 
 
-    /// UI¿¡ ±â·Ï º¸ÀÌ±â
+    /// UIì— ê¸°ë¡ ë³´ì´ê¸°
     private void AddRecordToUI(TimeRecord record)
     {
-        // null Ã¼Å©
+        // null ì²´í¬
         if (recordItemPrefab == null || recordsContent == null)
         {
-            Debug.LogWarning("RecordItem ÇÁ¸®ÆÕ ¶Ç´Â Content°¡ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù!");
+            Debug.LogWarning("RecordItem í”„ë¦¬íŒ¹ ë˜ëŠ” Contentê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
             return;
         }
 
-        // ÇÁ¸®ÆÕ º¹»çÇØ¼­ »ı¼º
+        // í”„ë¦¬íŒ¹ ë³µì‚¬í•´ì„œ ìƒì„±
         GameObject recordItem = Instantiate(recordItemPrefab, recordsContent);
         recordUIItems.Add(recordItem);
 
-        // ±â·Ï ¹øÈ£¿Í ½Ã°£ ¼³Á¤
+        // ê¸°ë¡ ë²ˆí˜¸ì™€ ì‹œê°„ ì„¤ì •
         TextMeshProUGUI recordText = recordItem.GetComponentInChildren<TextMeshProUGUI>();
         if (recordText != null)
         {
@@ -190,42 +190,42 @@ public class TimerManager : MonoBehaviour
             recordText.text = $"#{recordNumber} - {record.recordTime}";
         }
 
-        // »èÁ¦ ¹öÆ° ¼³Á¤
+        // ì‚­ì œ ë²„íŠ¼ ì„¤ì •
         Button deleteButton = recordItem.GetComponentInChildren<Button>();
         if (deleteButton != null)
         {
-            // ÇöÀç recordItemÀ» Ä¸Ã³ÇØ¼­ ¶÷´Ù¿¡ Àü´Ş
+            // í˜„ì¬ recordItemì„ ìº¡ì²˜í•´ì„œ ëŒë‹¤ì— ì „ë‹¬
             GameObject itemToDelete = recordItem;
             deleteButton.onClick.AddListener(() => DeleteRecordUI(itemToDelete));
         }
 
-        Debug.Log($"UI¿¡ ±â·Ï Ãß°¡µÊ: #{timeRecords.Count}");
+        Debug.Log($"UIì— ê¸°ë¡ ì¶”ê°€ë¨: #{timeRecords.Count}");
     }
 
-    /// °³º° ±â·Ï UI »èÁ¦
+    /// ê°œë³„ ê¸°ë¡ UI ì‚­ì œ
     private void DeleteRecordUI(GameObject recordItem)
     {
         if (recordItem != null && recordUIItems.Contains(recordItem))
         {
             int index = recordUIItems.IndexOf(recordItem);
 
-            // UI¿¡¼­ Á¦°Å
+            // UIì—ì„œ ì œê±°
             recordUIItems.Remove(recordItem);
             Destroy(recordItem);
 
-            Debug.Log($"UI ±â·Ï #{index + 1} »èÁ¦ (µ¥ÀÌÅÍ´Â À¯Áö)");
-            Debug.Log($"³²Àº UI ±â·Ï ¼ö: {recordUIItems.Count}");
-            Debug.Log($"½ÇÁ¦ µ¥ÀÌÅÍ ±â·Ï ¼ö: {timeRecords.Count}");
+            Debug.Log($"UI ê¸°ë¡ #{index + 1} ì‚­ì œ (ë°ì´í„°ëŠ” ìœ ì§€)");
+            Debug.Log($"ë‚¨ì€ UI ê¸°ë¡ ìˆ˜: {recordUIItems.Count}");
+            Debug.Log($"ì‹¤ì œ ë°ì´í„° ê¸°ë¡ ìˆ˜: {timeRecords.Count}");
 
-            // ¹øÈ£ ÀçÁ¤·Ä
+            // ë²ˆí˜¸ ì¬ì •ë ¬
             RefreshRecordNumbers();
         }
     }
 
-    /// ÀüÃ¼ ±â·Ï UI »èÁ¦
+    /// ì „ì²´ ê¸°ë¡ UI ì‚­ì œ
     private void OnClearAllButtonClick()
     {
-        // ¸ğµç UI ¾ÆÀÌÅÛ »èÁ¦
+        // ëª¨ë“  UI ì•„ì´í…œ ì‚­ì œ
         foreach (GameObject item in recordUIItems)
         {
             if (item != null)
@@ -235,13 +235,13 @@ public class TimerManager : MonoBehaviour
         }
         recordUIItems.Clear();
 
-        Debug.Log("=== ÀüÃ¼ UI ±â·Ï »èÁ¦ ===");
-        Debug.Log($"UI ±â·Ï ¼ö: {recordUIItems.Count}");
-        Debug.Log($"½ÇÁ¦ µ¥ÀÌÅÍ ±â·Ï ¼ö: {timeRecords.Count} (À¯ÁöµÊ)");
+        Debug.Log("=== ì „ì²´ UI ê¸°ë¡ ì‚­ì œ ===");
+        Debug.Log($"UI ê¸°ë¡ ìˆ˜: {recordUIItems.Count}");
+        Debug.Log($"ì‹¤ì œ ë°ì´í„° ê¸°ë¡ ìˆ˜: {timeRecords.Count} (ìœ ì§€ë¨)");
         Debug.Log("========================");
     }
 
-    /// ±â·Ï ¹øÈ£ ÀçÁ¤·Ä
+    /// ê¸°ë¡ ë²ˆí˜¸ ì¬ì •ë ¬
     private void RefreshRecordNumbers()
     {
         for (int i = 0; i < recordUIItems.Count; i++)
@@ -251,12 +251,12 @@ public class TimerManager : MonoBehaviour
                 TextMeshProUGUI recordText = recordUIItems[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (recordText != null)
                 {
-                    // UI´Â ¼ø¼­´ë·Î #1, #2, #3...
-                    // ÇÏÁö¸¸ ½ÇÁ¦ µ¥ÀÌÅÍ´Â ¿ø·¡ ÀÎµ¦½º À¯Áö
-                    // ¿©±â¼­´Â UI Ç¥½Ã ¹øÈ£¸¸ ¹Ù²Ş
+                    // UI ìˆœì„œ ìœ ì§€
+                    // ì‹¤ì œ ë°ì´í„° ìœ ì§€
+                    // UI í‘œì‹œ ë²ˆí˜¸ ë³€ê²½
                     string currentText = recordText.text;
 
-                    // ±âÁ¸ ½Ã°£ Á¤º¸ ÃßÃâ (- ÀÌÈÄ ºÎºĞ)
+                    // ê¸°ì¡´ ì‹œê°„ ì •ë³´ ì¶”ì¶œ (- ì´í›„ ë¶€ë¶„)
                     int dashIndex = currentText.IndexOf(" - ");
                     if (dashIndex > 0)
                     {
@@ -268,13 +268,13 @@ public class TimerManager : MonoBehaviour
         }
     }
 
-    /// ¿¡µğÅÍ¿¡¼­ µğ¹ö±×¿ë Á¤º¸ Ç¥½Ã
+    /// ì—ë””í„°ì—ì„œ ë””ë²„ê·¸ìš© ì •ë³´ í‘œì‹œ
     private void OnGUI()
     {
         if (Application.isEditor)
         {
-            GUI.Label(new Rect(10, 10, 300, 20), $"»óÅÂ: {(isRunning ? (isPaused ? "ÀÏ½ÃÁ¤Áö" : "½ÇÇà Áß") : "Á¤Áö")}");
-            GUI.Label(new Rect(10, 30, 300, 20), $"±â·Ï ¼ö: {timeRecords.Count}");
+            GUI.Label(new Rect(10, 10, 300, 20), $"ìƒíƒœ: {(isRunning ? (isPaused ? "ì¼ì‹œì •ì§€" : "ì‹¤í–‰ ì¤‘") : "ì •ì§€")}");
+            GUI.Label(new Rect(10, 30, 300, 20), $"ê¸°ë¡ ìˆ˜: {timeRecords.Count}");
         }
     }
 }
