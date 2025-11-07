@@ -15,15 +15,13 @@ public class RoomDecoPlace : MonoBehaviour
     [Header("Area Boundaries")]
     [SerializeField] private float leftWallMinY = 0f;   // 왼쪽 벽 최소 Y좌표
     [SerializeField] private float leftWallMaxX = 5f;   // 왼쪽 벽 최대 X좌표
-    [SerializeField] private float rightWallMinY = 0f;  // 오른쪽 벽 최소 Y좌표
+    [SerializeField] private float rightWallMaxY = 10f; // 오른쪽 벽 최소 Y좌표
     [SerializeField] private float rightWallMinX = 5f;   // 오른쪽 벽 최소 X좌표
 
     private RoomDecoItem currentItem;
     private ItemData2D currentItemData;
     private bool isPlacing = false;
     private RoomDecoGrid currentGrid;
-
-    private RoomDecoCore Manager;
 
     private void Awake()
     {
@@ -67,8 +65,11 @@ public class RoomDecoPlace : MonoBehaviour
             return;
         }
 
-        // 새 아이템 생성
+        // 새 아이템 생성 - 마우스 위치에서
+        Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         GameObject itemObj = new GameObject(itemData.ItemName);
+        itemObj.transform.position = mouseWorldPos; // 마우스 위치로 초기화 설정
+
 
 
         // 스프라이트 렌더러 추가
@@ -93,26 +94,34 @@ public class RoomDecoPlace : MonoBehaviour
     {
         
         
-        if (currentItem != null)
+        if (currentItem == null)
             return;
          
 
         // 마우스 위치 
         Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Debug.Log($"마우스 월드 좌표: {mouseWorldPos}");
+        // Debug.Log($"마우스 월드 좌표: {mouseWorldPos}");
 
         // 마우스 현재 위치의 영역 확인
         ItemType currentArea = GetAreaType(mouseWorldPos);
+        Debug.Log($"마우스 월드 좌표 : {mouseWorldPos}, 현재 영역: {currentArea}, 아이템 타입: {currentItemData.PlacementType}");
 
         // 현재 아이템 타입과 영역이 맞는지 확인
         Vector2Int gridPos = currentGrid.WorldToGrid(mouseWorldPos);
-        Debug.Log($"그리드 좌표: {gridPos}, IsWithinGrid: {currentGrid.IsWithinGrid(gridPos)}");
+        // Debug.Log($"그리드 좌표: {gridPos}, IsWithinGrid: {currentGrid.IsWithinGrid(gridPos)}");
 
         if (currentGrid.IsWithinGrid(gridPos))
         {
-            Vector2 worldPos = currentGrid.WorldToGrid(mouseWorldPos);
+            Vector2 worldPos = currentGrid.GridToWorld(gridPos);
             currentItem.transform.position = worldPos;
             currentItem.SetGridPosition(gridPos);
+        }
+
+        else
+        {
+            // 그리드 밖으로 나가면 아이템을 마우스 위치로 고정
+            currentItem.transform.position = mouseWorldPos;
+            // currentItem.SetGridPosition(new Vector2Int(-1, -1)); // 유효하지 않은 그리드 위치 설정
         }
     }
        
@@ -151,12 +160,22 @@ public class RoomDecoPlace : MonoBehaviour
         Debug.Log($"배치 시도 위치: {gridPos}, 타입 : {currentItemData.PlacementType}");
 
         // 중복 배치 체크
-        if (currentGrid.IsTileOccupied(gridPos, currentItemData.PlacementType))
+        bool isOccupied = currentGrid.IsTileOccupied(gridPos, currentItemData.PlacementType);
+        Debug.Log($"타일 점유 여부: {isOccupied}");
+
+        if (isOccupied)
         {
             Debug.Log("해당 위치에 이미 아이템이 배치되어 있습니다.");
             return;
         }
 
+        /* 이전에 쓰인 중복배치 체크 코드
+        if (currentGrid.IsTileOccupied(gridPos, currentItemData.PlacementType))
+        {
+            Debug.Log("해당 위치에 이미 아이템이 배치되어 있습니다.");
+            return;
+        }
+        */
 
 
         currentItem.SetPlaced(true);
@@ -171,9 +190,9 @@ public class RoomDecoPlace : MonoBehaviour
         currentItem.SetSortingOrder(sortingOrder);
 
         // 배치결과 전달
-        if (Manager != null)
+        if (coreManager != null)
         {
-            Manager.OnItemPlaced(currentItem);
+            coreManager.OnItemPlaced(currentItem);
         }
 
         Debug.Log($"아이템 배치 완료: {currentItemData.ItemName} at {gridPos}");
@@ -182,7 +201,6 @@ public class RoomDecoPlace : MonoBehaviour
         currentItem = null;
         isPlacing = false;
         currentItemData = null;
-        currentItem = null;
     }
 
     private int GetSortingOrder(ItemType type, float yPos)
@@ -211,7 +229,7 @@ public class RoomDecoPlace : MonoBehaviour
 
         currentItem = null;
         isPlacing = false;
-        currentItem = null;
+        currentItemData = null;
 
         Debug.Log("아이템 배치 취소");
     }
@@ -230,7 +248,7 @@ public class RoomDecoPlace : MonoBehaviour
             return ItemType.LeftWall;
 
         // 오른쪽 벽 영역
-        else if (worldPos.y <= rightWallMinY && worldPos.x >= rightWallMinX)
+        else if (worldPos.y <= rightWallMaxY && worldPos.x >= rightWallMinX)
             return ItemType.RightWall;
 
         // 바닥 영역
