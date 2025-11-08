@@ -10,7 +10,10 @@ using UnityEngine.UI;
 
 public class ProcessMonitor : MonoBehaviour
 {
-    /* WinAPI */
+    /* ====== 컴포넌트 ====== */
+    private ProcessFocusChecker focusCheckerComp;
+
+    /* ====== WinAPI ====== */
     private const int GWL_EXSTYLE = -20;
     private const int WS_EX_TOOLWINDOW = 0x00000080;
     private const int GW_OWNER = 4;
@@ -28,13 +31,13 @@ public class ProcessMonitor : MonoBehaviour
     [DllImport("user32.dll")]
     private static extern int GetWindowThreadProcessId(System.IntPtr hWnd, out int pid);
 
-    /* 프로세스 관련 변수 */
+    /* ====== 프로세스 관련 변수 ====== */
     private List<Process> allProcesses;
     private List<Process> visibleProcesses;
     private List<string> displayNames;
     private Dictionary<string, string> displayToProcName;
 
-    /* UI 요소 */
+    /* ====== UI ====== */
     [Header("UI")]
     [SerializeField]
     private TMP_Dropdown dropdown;
@@ -42,7 +45,6 @@ public class ProcessMonitor : MonoBehaviour
     private Button refreshButton;
 
     /* ====== 필터 ====== */
-
     // 1) 프로세스명 정확 일치 블랙리스트(대소문자 무시)
     private readonly HashSet<string> nameBlacklist = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase)
     {
@@ -96,9 +98,10 @@ public class ProcessMonitor : MonoBehaviour
     };
 
     /* ====== 주요 로직 ====== */
-
     void Start()
     {
+        focusCheckerComp = GetComponent<ProcessFocusChecker>();
+
         RefreshProcessList();
 
         if (refreshButton != null)
@@ -169,7 +172,6 @@ public class ProcessMonitor : MonoBehaviour
     }
 
     /* ====== 필터/도우미 ====== */
-
     private bool LooksUnity(Process p)
     {
         string pn = p.ProcessName;
@@ -263,5 +265,11 @@ public class ProcessMonitor : MonoBehaviour
 
         foreach (var p in procGroup)
             UnityEngine.Debug.Log($" - PID: {p.Id}");
+
+        // 첫 번째 프로세스를 감시 대상으로 설정
+        if (focusCheckerComp != null && procGroup.Count > 0)
+            focusCheckerComp.SetTargetProcess(procGroup[0]);
+        else
+            UnityEngine.Debug.LogWarning("⚠️ ProcessFocusChecker 컴포넌트가 할당되지 않았습니다.");
     }
 }

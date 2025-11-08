@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1703956574348116337}
   - component: {fileID: 7584669697615957185}
+  - component: {fileID: 5562061591147721848}
   m_Layer: 0
   m_Name: ProcessMonitor
   m_TagString: Untagged
@@ -46,3 +47,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProcessMonitor
   dropdown: {fileID: 0}
   refreshButton: {fileID: 0}
+  focusCheckerComp: {fileID: 5562061591147721848}
+--- !u!114 &5562061591147721848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4795133058488674820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39e7e6fa432a05841ac2c1291f755e88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProcessFocusChecker
