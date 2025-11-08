@@ -1,11 +1,6 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Scenes/ProcessTestScene.unity.meta
 guid: 2ec294c0a2861b64b9225b07dee9452d
 DefaultImporter:
-========
-guid: 37def6bed2dcbd343b4b9173d029fa6e
-PrefabImporter:
->>>>>>>> develop:Assets/Prefabs/Items/TestCeilingItem.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 
