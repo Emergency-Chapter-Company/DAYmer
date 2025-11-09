@@ -20,7 +20,7 @@ public class RoomDecoState
 {
     public List<PlacedItemData> placedItems = new List<PlacedItemData>();
 
-    public RoomDecoState clone()
+    public RoomDecoState Clone()
     {
         RoomDecoState clone = new RoomDecoState();
         foreach (var item in placedItems)

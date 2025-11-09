@@ -72,15 +72,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //원본 슬롯 불투명하게 복원
         canvasGroup.alpha = 1.0f;
 
-        //디버깅용잠깐쓰는거
-        Debug.Log($"editModeManager null? {editModeManager == null}");
-        Debug.Log($"itemData null? {itemData == null}");
-        if (itemData != null)
-        {
-            Debug.Log($"itemData.ItemPrefab null? {itemData.ItemPrefab == null}");
-        }
-
-
         // 마우스 위치에 아이템 배치
         if (editModeManager != null && itemData.ItemPrefab != null)
         {
@@ -91,6 +82,25 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             GameObject placedItem = Instantiate(itemData.ItemPrefab);
             placedItem.transform.position = spawnPosition;
             placedItem.transform.SetParent(editModeManager.GetRoomContainer());
+
+            RoomDecoItem itemComponent = placedItem.GetComponent<RoomDecoItem>();
+            if (itemComponent ==null)
+            {
+                itemComponent = placedItem.AddComponent<RoomDecoItem>();
+            }
+            itemComponent.SetItemData(itemData);
+
+            // 아이템선택을 하려면 아이템 프리펩에 Box콜라이더2D가 설정되어야 하는데
+            // 이걸 자동으로 해주는 코드
+            // 일단 이거 없이 해보니까 선택이 안되가지고 넣음
+            // 코드가 아니더라도 프리펩에서 설정하면 되긴하는데 자동 코드가 편할 것 같음
+            if (placedItem.GetComponent<Collider2D>() ==null )
+            {
+                BoxCollider2D collider =placedItem.AddComponent<BoxCollider2D>();
+
+                //스프라이트 크기에 맞춰 자동 조정됨
+                Debug.Log($"Collider2D 자동 추가 : {placedItem.name}");
+            }
             
             // 편집 모드 매니저에 배치된 아이템 등록
             editModeManager.AddPlacedItem(placedItem);

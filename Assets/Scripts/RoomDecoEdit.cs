@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class RoomDecoEdit : MonoBehaviour
@@ -12,6 +13,8 @@ public class RoomDecoEdit : MonoBehaviour
     [Header("Edit Mode UI")]
     [SerializeField] private Button cancelButton;
     [SerializeField] private Button confirmButton;
+    [SerializeField] private Button resetButton;
+    [SerializeField] private Button deleteButton;
 
     [Header("Room Management")]
     [SerializeField] private Transform roomContainer; //아이템들이 배치될 부모 오브젝트
@@ -20,17 +23,43 @@ public class RoomDecoEdit : MonoBehaviour
     private RoomDecoState backupState = null;
     private List<GameObject> currentPlacedObjects = new List<GameObject>();
 
+    // 아이템 선택
+    private GameObject selectedItem = null;
+    private SpriteRenderer selectedItemRenderer = null;
+    private Color originalColor;
+
     private bool isEditMode = false;
+
+    // 인벤토리 매니저 참조
+    private InventoryManager inventoryManager;
 
     private void Start()
     {
         editModeButton.onClick.AddListener(EnterEditMode);
         cancelButton.onClick.AddListener(OnCancelButtonClicked);
         confirmButton.onClick.AddListener(OnConfirmButtonClicked);
+        resetButton.onClick.AddListener(OnResetButtonClicked);
+        deleteButton.onClick.AddListener(OnDeleteButtonClicked);
 
         // 초기 상태 설정 : 편집 모드 비활성화
         inventoryPanel.SetActive(false);
         editModeUI.SetActive(false);
+        deleteButton.interactable = false;   // 삭제버튼 초기 비활성화
+    }
+
+    private void Update()
+    {
+        // 빈 공간 클릭 시 선택 해제
+        if (isEditMode && Input.GetMouseButtonDown(0))
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+
+            if (hit.collider == null)
+            {
+                DeselectItem();
+            }
+        }
     }
 
     public void EnterEditMode()
@@ -52,6 +81,7 @@ public class RoomDecoEdit : MonoBehaviour
     public void ExitEditMode()
     {
         isEditMode = false;
+        DeselectItem();         // 선택해제
 
         // UI 비활성화
         editModeButton.gameObject.SetActive(true);  // 편집 버튼 표시
@@ -72,14 +102,26 @@ public class RoomDecoEdit : MonoBehaviour
 
         foreach (Transform child in roomContainer)
         {
-            PlacedItemData data = new PlacedItemData(
-                null,
+            RoomDecoItem itemComponent = child.GetComponent<RoomDecoItem>();
+            GameObject prefab = null;
+
+            if (itemComponent != null)
+            {
+                ItemData2D data = itemComponent.GetItemData();
+                if (data != null)
+                {
+                    prefab = data.ItemPrefab;
+                }
+            }
+
+            PlacedItemData placedata = new PlacedItemData(
+                prefab,
                 child.position,
                 child.rotation
                 );
-            currentState.placedItems.Add(data);
+            currentState.placedItems.Add(placedata);
         }
-        backupState = currentState.clone();
+        backupState = currentState.Clone();
         Debug.Log($"백업 : {backupState.placedItems.Count}개 아이템");
     }
 
@@ -105,6 +147,15 @@ public class RoomDecoEdit : MonoBehaviour
                     GameObject restored = Instantiate(data.itemPrefab, roomContainer);
                     restored.transform.position = data.position;
                     restored.transform.rotation = data.rotation;
+
+                    // PlacedItemController 추가
+                    if (restored.GetComponent<PlacedItemController>() == null)
+                    {
+                        PlacedItemController controller = restored.AddComponent<PlacedItemController>();
+                        controller.SetEditManager(this);
+                    }
+
+
                     currentPlacedObjects.Add(restored);
                 }
 
@@ -122,15 +173,67 @@ public class RoomDecoEdit : MonoBehaviour
         {
             if (obj != null)
             {
-                PlacedItemData data = new PlacedItemData(
-                   null,
+                RoomDecoItem itemComponent = obj.GetComponent<RoomDecoItem>();
+                GameObject prefab = null;
+
+                if (itemComponent != null)
+                {
+                    ItemData2D data = itemComponent.GetItemData();
+                    if (data != null)
+                    {
+                        prefab = data.ItemPrefab;
+                    }
+                }
+
+
+                PlacedItemData placedata = new PlacedItemData(
+                   prefab,
                    obj.transform.position,
                    obj.transform.rotation
-                );                   
-                currentState.placedItems.Add(data);
+                );
+                currentState.placedItems.Add(placedata);
             }
         }
         Debug.Log($"상태 적용 : {currentState.placedItems.Count}개 아이템");
+    }
+
+    // 초기화 버튼
+    private void OnResetButtonClicked()
+    {
+        Debug.Log("편집 모드 초기화 버튼이 클릭되었습니다.");
+        // 모든 배치 아이템 제거
+        foreach (GameObject obj in currentPlacedObjects)
+        {
+            if (obj != null)
+            {
+                Destroy(obj);
+            }
+        }
+        currentPlacedObjects.Clear();
+
+        DeselectItem();
+
+        Debug.Log("배치가 초기화 완료. 편집모드는 유지");
+    }
+
+    // 아이템 배치 개별 삭제 버튼
+    private void OnDeleteButtonClicked()
+    {
+        if (selectedItem != null)
+        {
+            Debug.Log($"선택된 아이템 삭제: {selectedItem.name}");
+
+            // 리스트에서 제거
+            currentPlacedObjects.Remove(selectedItem);
+
+            // GameObject 삭제
+            Destroy(selectedItem);
+
+            // 선택 해제
+            selectedItem = null;
+            selectedItemRenderer = null;
+            deleteButton.interactable = false;
+        }
     }
 
     private void OnCancelButtonClicked()
@@ -154,15 +257,58 @@ public class RoomDecoEdit : MonoBehaviour
     public void AddPlacedItem(GameObject item)
     {
         currentPlacedObjects.Add(item);
+
+        //PlacedItemController 추가
+        if (item.GetComponent<PlacedItemController>() == null)
+        {
+            PlacedItemController controller = item.AddComponent<PlacedItemController>();
+            controller.SetEditManager(this);
+        }
+    }
+
+    public void SelectPlacedItem(GameObject item)
+    {
+
+        // 이전 선택 해제
+        DeselectItem();
+
+        // selectedItem = Item;
+        // selectedItemRenderer = selectedItem.GetComponent<SpriteRenderer>();
+
+        if (selectedItemRenderer != null)
+        {
+            originalColor = selectedItemRenderer.material.color;
+            selectedItemRenderer.color = new Color(
+                originalColor.r * 0.8f,
+                originalColor.g * 0.8f,
+                originalColor.b * 1.2f,
+                originalColor.a
+                );
+        }
+        deleteButton.interactable = true;
+        // Debug.Log($"아이템 선택 : {Item.name}");
+    }
+
+    public void DeselectItem()
+    {
+        if (selectedItem != null && selectedItemRenderer != null)
+        {
+            selectedItemRenderer.color = originalColor;
+        }
+
+        selectedItem = null;
+        selectedItemRenderer = null;
+        deleteButton.interactable = false;
     }
 
     public Transform GetRoomContainer()
     {
         return roomContainer;
     }
-
+    /*
     public void ResisterPlacedItem(GameObject item)
     {
         currentPlacedObjects.Add(item);
     }
+    */
 }
