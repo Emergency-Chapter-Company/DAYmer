@@ -8,11 +8,17 @@ public class RoomDecoEdit : MonoBehaviour
     [SerializeField] private GameObject inventoryPanel;
     [SerializeField] private GameObject editModeUI;      // 취소/확인 버튼 포함하기
 
+    [Header("Edit Mode UI")]
+    [SerializeField] private Button cancelButton;
+    [SerializeField] private Button confirmButton;
+
     private bool isEditMode = false;
 
     private void Start()
     {
         editModeButton.onClick.AddListener(EnterEditMode);
+        cancelButton.onClick.AddListener(OnCancelButtonClicked);
+        confirmButton.onClick.AddListener(OnConfirmButtonClicked);
 
         // 초기 상태 설정 : 편집 모드 비활성화
         inventoryPanel.SetActive(false);
@@ -47,4 +53,20 @@ public class RoomDecoEdit : MonoBehaviour
     {
         return isEditMode;
     }
+
+    private void OnCancelButtonClicked()
+    {
+        Debug.Log("편집 모드 취소 버튼이 클릭되었습니다.");
+        // 이전 상태로 상대 복원
+        ExitEditMode();
+    }
+
+
+    private void OnConfirmButtonClicked()
+    {
+        Debug.Log("편집 모드 확인 버튼이 클릭되었습니다.");
+        // 현재상태 저장 기능 추가예정
+        ExitEditMode();
+    }
+
 }
