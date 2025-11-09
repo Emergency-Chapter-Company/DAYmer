@@ -8,12 +8,14 @@ public class ItemData2D : ScriptableObject
     [SerializeField] private string itemName = "New Item";
     [SerializeField] private int itemID = 0;
     [SerializeField] private Sprite sprite;
+    [SerializeField] private GameObject itemPrefab;
     [SerializeField] private ItemType placementType = ItemType.Floor;
     [SerializeField] private Color itemColor = Color.white;
 
     public string ItemName => itemName;
     public int ItemID => itemID;
     public Sprite Sprite => sprite;
+    public GameObject ItemPrefab => itemPrefab; // 편집모드용 프리팹
     public ItemType PlacementType => placementType;
     public Color ItemColor => itemColor;
 }
