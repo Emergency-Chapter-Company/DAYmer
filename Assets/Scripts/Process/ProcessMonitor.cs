@@ -91,8 +91,8 @@ public class ProcessMonitor : MonoBehaviour
         "Unity", "Unity Editor", "Unity Hub"
     };
 
-    // 4) Unity는 Editor/Hub만 허용
-    private readonly HashSet<string> allowedUnity = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase)
+    // 4) 프로그램 계열 중 허용 대상
+    private readonly HashSet<string> allowedProgram = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase)
     {
         "Unity", "Unity Editor", "Unity Hub"
     };
@@ -138,7 +138,7 @@ public class ProcessMonitor : MonoBehaviour
             try
             {
                 var proc = Process.GetProcessById(pid);
-                if (LooksUnity(proc) && !UnityAllowed(proc))
+                if (LooksAllowedProgram(proc) && !ProgramAllowed(proc))
                     return true;
 
                 string readable = GetReadableName(proc);
@@ -172,7 +172,7 @@ public class ProcessMonitor : MonoBehaviour
     }
 
     /* ====== 필터/도우미 ====== */
-    private bool LooksUnity(Process p)
+    private bool LooksAllowedProgram(Process p)
     {
         string pn = p.ProcessName;
         try
@@ -185,13 +185,13 @@ public class ProcessMonitor : MonoBehaviour
         catch { return pn.StartsWith("Unity", System.StringComparison.OrdinalIgnoreCase); }
     }
 
-    private bool UnityAllowed(Process p)
+    private bool ProgramAllowed(Process p)
     {
-        // Unity Editor/Hub만 허용
+        // 프로그램 계열 정리 ex) Unity Editor/Hub만 허용
         string pn = p.ProcessName;
         string fd = string.Empty;
         try { fd = p.MainModule.FileVersionInfo?.FileDescription ?? string.Empty; } catch { }
-        return allowedUnity.Contains(pn) || allowedUnity.Contains(fd);
+        return allowedProgram.Contains(pn) || allowedProgram.Contains(fd);
     }
 
     private bool IsBlacklisted(Process p, string readableName)
@@ -212,7 +212,7 @@ public class ProcessMonitor : MonoBehaviour
         }
 
         // (C) 세부 규칙: Unity 백그라운드(상단에서 1차 컷했지만 안전망)
-        if (LooksUnity(p) && !UnityAllowed(p))
+        if (LooksAllowedProgram(p) && !ProgramAllowed(p))
             return true;
 
         return false;
