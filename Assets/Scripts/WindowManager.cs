@@ -61,6 +61,8 @@ public class WindowManager : MonoBehaviour
     }
     void Start()
     {
+        Application.runInBackground = true; // 백그라운드 실행 허용
+
         WindowSetting(GetCurrentSceneScreenX(), GetCurrentSceneScreenY());
     }
 
