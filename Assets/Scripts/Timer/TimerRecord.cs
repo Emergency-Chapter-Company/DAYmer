@@ -8,11 +8,14 @@ public class TimeRecord
     private DateTime recordDate;    // 기록된 날짜 및 시간
     private float totalSeconds;     // 총 경과 시간(초 단위)
 
-    public TimeRecord(float seconds)
+    private int timePerCoins;  // 코인 계산을 위한 시간 단위
+
+    public TimeRecord(float seconds, int timePerCoin = 60)
     {
         totalSeconds = seconds;
         recordTime = FormatTime(seconds);
         recordDate = DateTime.Now;
+        timePerCoins = timePerCoin;
     }
 
     // 초를 00:00:00 형식으로 변환
@@ -41,5 +44,11 @@ public class TimeRecord
     public float GetTotalSeconds()
     {
         return totalSeconds;
+    }
+
+    // 기록된 시간에 따른 코인 계산
+    public int GetCoins()
+    {
+        return (int)(totalSeconds / timePerCoins); // timePerCoins분당 1코인 지급
     }
 }
