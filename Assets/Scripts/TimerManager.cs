@@ -6,30 +6,31 @@ using TMPro;
 /// 타이머 전체 기능
 public class TimerManager : MonoBehaviour
 {
-    [Header("UI References")]
+    /* ====== 타이머 상태 ====== */
+    private float currentTime = 0f;   // 현재 경과 시간
+    private bool isRunning = false;   // 실행 중 여부
+    private bool isPaused = false;    // 일시정지 여부
+
+    /* ====== 기록 관리 ====== */
+    private List<TimeRecord> timeRecords = new List<TimeRecord>();      // 실제 데이터
+    private List<GameObject> recordUIItems = new List<GameObject>();    // UI 아이템들
+
+    /* ====== UI 컴포넌트 ====== */
+    [Header("타이머 UI")]
     [SerializeField] private TextMeshProUGUI timeText;           // 시간 표시 텍스트 (00:00:00)
     [SerializeField] private Button startButton;                 // 시작 버튼
     [SerializeField] private Button pauseButton;                 // 일시정지 버튼
     [SerializeField] private Button stopButton;                  // 정지 및 기록 버튼
 
-    [Header("Button Texts")]
-    [SerializeField] private TextMeshProUGUI startButtonText;
-    [SerializeField] private TextMeshProUGUI pauseButtonText;
-    [SerializeField] private TextMeshProUGUI stopButtonText;
-
-    [Header("Record UI")]
+    [Header("기록 UI")]
     [SerializeField] private Transform recordsContent;           // 기록이 추가될 Content
-    [SerializeField] private GameObject recordItemPrefab;        // RecordItem 프리팹
-    [SerializeField] private Button clearAllButton;                  // 전체 기록 삭제 버튼
+    [SerializeField] private GameObject timeRecordUIPrefab;      // TimeRecordUI 프리팹
+    [SerializeField] private Button clearAllButton;              // 전체 기록 삭제 버튼
 
-    // 타이머 상태
-    private float currentTime = 0f;   // 현재 경과 시간
-    private bool isRunning = false;   // 실행 중 여부
-    private bool isPaused = false;    // 일시정지 여부
-
-    // 기록 관리 (일단은 콘솔만 출력)
-    private List<TimeRecord> timeRecords = new List<TimeRecord>();      // 실제 데이터
-    private List<GameObject> recordUIItems = new List<GameObject>();    // UI 아이템들
+    //[Header("Button Texts")]
+    //[SerializeField] private TextMeshProUGUI startButtonText;
+    //[SerializeField] private TextMeshProUGUI pauseButtonText;
+    //[SerializeField] private TextMeshProUGUI stopButtonText;
 
     private void Start()
     {
@@ -172,14 +173,14 @@ public class TimerManager : MonoBehaviour
     private void AddRecordToUI(TimeRecord record)
     {
         // null 체크
-        if (recordItemPrefab == null || recordsContent == null)
+        if (timeRecordUIPrefab == null || recordsContent == null)
         {
-            Debug.LogWarning("RecordItem 프리팹 또는 Content가 연결되지 않았습니다!");
+            Debug.LogWarning("TimeRecordUI 프리팹 또는 Content가 연결되지 않았습니다!");
             return;
         }
 
         // 프리팹 복사해서 생성
-        GameObject recordItem = Instantiate(recordItemPrefab, recordsContent);
+        GameObject recordItem = Instantiate(timeRecordUIPrefab, recordsContent);
         recordUIItems.Add(recordItem);
 
         // 기록 번호와 시간 설정

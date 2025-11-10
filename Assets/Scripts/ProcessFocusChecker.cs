@@ -70,7 +70,6 @@ public class ProcessFocusChecker : MonoBehaviour
 
     private void Start()
     {
-        Application.runInBackground = true;
         GetCursorPos(out POINT p);
         lastMousePos = new Vector2(p.X, p.Y);
         lastInputTime = Time.time;

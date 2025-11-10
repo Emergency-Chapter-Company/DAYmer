@@ -1,12 +1,12 @@
 using System;
 
-/// Å¸ÀÌ¸Ó ½Ã°£ ±â·ÏÀ» ÀúÀå
+/// ê¸°ë¡ëœ ì‹œê°„ ì •ë³´ë¥¼ ì €ì¥í•˜ëŠ” í´ë˜ìŠ¤
 [Serializable]
 public class TimeRecord
 {
-    public string recordTime;      // "00:00:00" Çü½ÄÀÇ ±â·Ï ½Ã°£
-    public DateTime recordDate;    // ±â·ÏµÈ ³¯Â¥ ¹× ½Ã°£
-    public float totalSeconds;     // ÃÑ ÃÊ ´ÜÀ§ ½Ã°£
+    public string recordTime;      // "00:00:00" í˜•ì‹ìœ¼ë¡œ í‘œì‹œë˜ëŠ” ì‹œê°„
+    public DateTime recordDate;    // ê¸°ë¡ëœ ë‚ ì§œ ë° ì‹œê°„
+    public float totalSeconds;     // ì´ ê²½ê³¼ ì‹œê°„(ì´ˆ ë‹¨ìœ„)
 
     public TimeRecord(float seconds)
     {
@@ -15,7 +15,7 @@ public class TimeRecord
         recordDate = DateTime.Now;
     }
 
-    /// ÃÊ¸¦ 00:00:00 Çü½ÄÀ¸·Î º¯È¯
+    // ì´ˆë¥¼ 00:00:00 í˜•ì‹ìœ¼ë¡œ ë³€í™˜
     private string FormatTime(float seconds)
     {
         int hours = (int)(seconds / 3600);
@@ -25,7 +25,7 @@ public class TimeRecord
         return string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, secs);
     }
 
-    /// ±â·Ï Á¤º¸¸¦ ¹®ÀÚ¿­·Î ¹İÈ¯
+    // ê¸°ë¡ ì •ë³´ë¥¼ ë¬¸ìì—´ë¡œ ë³€í™˜
     public override string ToString()
     {
         return $"{recordTime} - {recordDate:yyyy/MM/dd HH:mm:ss}";
