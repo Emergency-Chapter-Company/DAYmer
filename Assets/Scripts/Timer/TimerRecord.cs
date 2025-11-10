@@ -4,9 +4,9 @@ using System;
 [Serializable]
 public class TimeRecord
 {
-    public string recordTime;      // "00:00:00" 형식으로 표시되는 시간
-    public DateTime recordDate;    // 기록된 날짜 및 시간
-    public float totalSeconds;     // 총 경과 시간(초 단위)
+    private string recordTime;      // "00:00:00" 형식으로 표시되는 시간
+    private DateTime recordDate;    // 기록된 날짜 및 시간
+    private float totalSeconds;     // 총 경과 시간(초 단위)
 
     public TimeRecord(float seconds)
     {
@@ -29,5 +29,17 @@ public class TimeRecord
     public override string ToString()
     {
         return $"{recordTime} - {recordDate:yyyy/MM/dd HH:mm:ss}";
+    }
+
+    // 기록된 시간 문자열 가져오기
+    public string GetRecordTime()
+    {
+        return recordTime;
+    }
+
+    // 기록된 시간 초 가져오기
+    public float GetTotalSeconds()
+    {
+        return totalSeconds;
     }
 }

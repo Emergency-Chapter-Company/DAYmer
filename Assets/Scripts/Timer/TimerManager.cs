@@ -12,8 +12,8 @@ public class TimerManager : MonoBehaviour
     private bool isPaused = false;    // 일시정지 여부
 
     /* ====== 기록 관리 ====== */
-    private List<TimeRecord> timeRecords = new List<TimeRecord>();      // 실제 데이터
-    private List<GameObject> recordUIItems = new List<GameObject>();    // UI 아이템들
+    private List<TimeRecord> timeRecordList = new List<TimeRecord>();   // 실제 데이터
+    private List<GameObject> recordUIList = new List<GameObject>();     // UI 아이템들
 
     /* ====== UI 컴포넌트 ====== */
     [Header("타이머 UI")]
@@ -104,10 +104,10 @@ public class TimerManager : MonoBehaviour
             if (currentTime > 0)
             {
                 TimeRecord newRecord = new TimeRecord(currentTime);
-                timeRecords.Add(newRecord);
+                timeRecordList.Add(newRecord);
 
                 // 기록을 콘솔에 출력
-                Debug.Log($"기록 저장: {newRecord.recordTime}");
+                Debug.Log($"기록 저장: {newRecord.GetRecordTime()}");
 
                 // UI에 기록 추가
                 AddRecordToUI(newRecord);
@@ -168,7 +168,6 @@ public class TimerManager : MonoBehaviour
         }
     }
 
-
     /// UI에 기록 보이기
     private void AddRecordToUI(TimeRecord record)
     {
@@ -181,14 +180,14 @@ public class TimerManager : MonoBehaviour
 
         // 프리팹 복사해서 생성
         GameObject recordItem = Instantiate(timeRecordUIPrefab, recordsContent);
-        recordUIItems.Add(recordItem);
+        recordUIList.Add(recordItem);
 
         // 기록 번호와 시간 설정
         TextMeshProUGUI recordText = recordItem.GetComponentInChildren<TextMeshProUGUI>();
         if (recordText != null)
         {
-            int recordNumber = timeRecords.Count;
-            recordText.text = $"#{recordNumber} - {record.recordTime}";
+            int recordNumber = timeRecordList.Count;
+            recordText.text = $"#{recordNumber} - {record.GetRecordTime()}";
         }
 
         // 삭제 버튼 설정
@@ -200,23 +199,23 @@ public class TimerManager : MonoBehaviour
             deleteButton.onClick.AddListener(() => DeleteRecordUI(itemToDelete));
         }
 
-        Debug.Log($"UI에 기록 추가됨: #{timeRecords.Count}");
+        Debug.Log($"UI에 기록 추가됨: #{timeRecordList.Count}");
     }
 
     /// 개별 기록 UI 삭제
     private void DeleteRecordUI(GameObject recordItem)
     {
-        if (recordItem != null && recordUIItems.Contains(recordItem))
+        if (recordItem != null && recordUIList.Contains(recordItem))
         {
-            int index = recordUIItems.IndexOf(recordItem);
+            int index = recordUIList.IndexOf(recordItem);
 
             // UI에서 제거
-            recordUIItems.Remove(recordItem);
+            recordUIList.Remove(recordItem);
             Destroy(recordItem);
 
             Debug.Log($"UI 기록 #{index + 1} 삭제 (데이터는 유지)");
-            Debug.Log($"남은 UI 기록 수: {recordUIItems.Count}");
-            Debug.Log($"실제 데이터 기록 수: {timeRecords.Count}");
+            Debug.Log($"남은 UI 기록 수: {recordUIList.Count}");
+            Debug.Log($"실제 데이터 기록 수: {timeRecordList.Count}");
 
             // 번호 재정렬
             RefreshRecordNumbers();
@@ -227,29 +226,29 @@ public class TimerManager : MonoBehaviour
     private void OnClearAllButtonClick()
     {
         // 모든 UI 아이템 삭제
-        foreach (GameObject item in recordUIItems)
+        foreach (GameObject item in recordUIList)
         {
             if (item != null)
             {
                 Destroy(item);
             }
         }
-        recordUIItems.Clear();
+        recordUIList.Clear();
 
         Debug.Log("=== 전체 UI 기록 삭제 ===");
-        Debug.Log($"UI 기록 수: {recordUIItems.Count}");
-        Debug.Log($"실제 데이터 기록 수: {timeRecords.Count} (유지됨)");
+        Debug.Log($"UI 기록 수: {recordUIList.Count}");
+        Debug.Log($"실제 데이터 기록 수: {timeRecordList.Count} (유지됨)");
         Debug.Log("========================");
     }
 
     /// 기록 번호 재정렬
     private void RefreshRecordNumbers()
     {
-        for (int i = 0; i < recordUIItems.Count; i++)
+        for (int i = 0; i < recordUIList.Count; i++)
         {
-            if (recordUIItems[i] != null)
+            if (recordUIList[i] != null)
             {
-                TextMeshProUGUI recordText = recordUIItems[i].GetComponentInChildren<TextMeshProUGUI>();
+                TextMeshProUGUI recordText = recordUIList[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (recordText != null)
                 {
                     // UI 순서 유지
@@ -275,7 +274,7 @@ public class TimerManager : MonoBehaviour
         if (Application.isEditor)
         {
             GUI.Label(new Rect(10, 10, 300, 20), $"상태: {(isRunning ? (isPaused ? "일시정지" : "실행 중") : "정지")}");
-            GUI.Label(new Rect(10, 30, 300, 20), $"기록 수: {timeRecords.Count}");
+            GUI.Label(new Rect(10, 30, 300, 20), $"기록 수: {timeRecordList.Count}");
         }
     }
 }
