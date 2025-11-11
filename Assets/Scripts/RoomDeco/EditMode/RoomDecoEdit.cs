@@ -7,8 +7,10 @@ public class RoomDecoEdit : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private Button editModeButton;
+    [SerializeField] private Button storeButton;
     [SerializeField] private GameObject inventoryPanel;
     [SerializeField] private GameObject editModeUI;      // 취소/확인 버튼 포함하기
+
 
     [Header("Edit Mode UI")]
     [SerializeField] private Button cancelButton;
@@ -82,6 +84,7 @@ public class RoomDecoEdit : MonoBehaviour
 
         // UI 활성화
         editModeButton.gameObject.SetActive(false); // 편집 버튼 숨기기
+        storeButton.gameObject.SetActive(false);
         inventoryPanel.SetActive(true);             // 인벤토리 패널 표시
         editModeUI.SetActive(true);                 // 편집 모드 UI 표시
 
@@ -95,6 +98,7 @@ public class RoomDecoEdit : MonoBehaviour
 
         // UI 비활성화
         editModeButton.gameObject.SetActive(true);  // 편집 버튼 표시
+        storeButton.gameObject.SetActive(true);
         inventoryPanel.SetActive(false);            // 인벤토리 패널 숨기기
         editModeUI.SetActive(false);                // 편집 모드 UI 숨기기
 
@@ -124,7 +128,7 @@ public class RoomDecoEdit : MonoBehaviour
             currentState.placedItems.Add(placedata);
         }
         backupState = currentState.Clone();
-        Debug.Log($"백업 : {backupState.placedItems.Count}개 아이템");
+        //Debug.Log($"백업 : {backupState.placedItems.Count}개 아이템");
     }
 
     private void RestoreBackupState()
@@ -180,7 +184,7 @@ public class RoomDecoEdit : MonoBehaviour
             }
         }
 
-        Debug.Log($"복원 완료: {backupCount}개 아이템 복원");
+        //Debug.Log($"복원 완료: {backupCount}개 아이템 복원");
     }
 
     private void ApplyCurrentState()
@@ -204,7 +208,7 @@ public class RoomDecoEdit : MonoBehaviour
                 currentState.placedItems.Add(placedata);
             }
         }
-        Debug.Log($"상태 적용 : {currentState.placedItems.Count}개 아이템");
+        //Debug.Log($"상태 적용 : {currentState.placedItems.Count}개 아이템");
     }
 
     // 초기화 버튼
@@ -223,7 +227,7 @@ public class RoomDecoEdit : MonoBehaviour
 
         DeselectItem();
 
-        Debug.Log("배치가 초기화 완료. 편집모드는 유지");
+        //Debug.Log("배치가 초기화 완료. 편집모드는 유지");
     }
 
     // 아이템 배치 개별 삭제 버튼

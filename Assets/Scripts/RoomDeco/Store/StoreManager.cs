@@ -10,6 +10,7 @@ public class StoreManager : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private Button storeButton;
+    [SerializeField] private Button editModeButton;
     [SerializeField] private GameObject storePanel;
     [SerializeField] private Button exitButton;
     [SerializeField] private Transform slotParent;
@@ -31,6 +32,8 @@ public class StoreManager : MonoBehaviour
 
     private void OpenStore()
     {
+        storeButton.gameObject.SetActive(false);
+        editModeButton.gameObject.SetActive(false);
         storePanel.SetActive(true);
         exitButton.gameObject.SetActive(true);
         RefreshStore();
@@ -38,6 +41,8 @@ public class StoreManager : MonoBehaviour
 
     private void CloseStore()
     {
+        storeButton.gameObject.SetActive(true);
+        editModeButton.gameObject.SetActive(true);
         storePanel.SetActive(false);
         exitButton.gameObject.SetActive(false);
     }

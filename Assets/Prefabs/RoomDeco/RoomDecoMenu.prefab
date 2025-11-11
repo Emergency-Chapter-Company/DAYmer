@@ -3664,6 +3664,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDecoEdit
   editModeButton: {fileID: 4009125985715671417}
+  storeButton: {fileID: 2809675453631501191}
   inventoryPanel: {fileID: 876325112958504430}
   editModeUI: {fileID: 2749342469476406033}
   cancelButton: {fileID: 4633358110811815821}
@@ -3684,6 +3685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StoreManager
   storeButton: {fileID: 2809675453631501191}
+  editModeButton: {fileID: 4009125985715671417}
   storePanel: {fileID: 5082871353257935581}
   exitButton: {fileID: 6300491443205298410}
   slotParent: {fileID: 6408812036189591707}
