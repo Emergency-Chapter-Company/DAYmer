@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
     private int specialCoin = 0;
 
     [Header("아이템")]
-    [SerializeField] private List<RoomDecoItem> itemList = new List<RoomDecoItem>();
+    [SerializeField]
+    private InventoryManager inventoryManager;
 
     void Awake()
     {
@@ -75,5 +76,15 @@ public class GameManager : MonoBehaviour
             specialCoin = 0;
     }
 
-    
+    public void AddItemToInventory(RoomDecoItem newItem)
+    {
+        if (inventoryManager == null)
+        {
+            Debug.LogWarning("InventoryManager 참조가 없습니다!");
+            return;
+        }
+
+        inventoryManager.AddItem(newItem);
+        Debug.Log($"[GameManager] 인벤토리에 {newItem.GetItemName()} 추가됨");
+    }
 }

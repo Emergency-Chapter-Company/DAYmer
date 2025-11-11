@@ -17,6 +17,20 @@ public class InventoryManager : MonoBehaviour
         PopulateInventory();
     }
 
+    public void AddItem(RoomDecoItem newItem)
+    {
+        if (!itemList.Contains(newItem))
+        {
+            itemList.Add(newItem);
+            Debug.Log($"[InventoryManager] {newItem.GetItemName()} 추가됨");
+
+            PopulateInventory(); // UI 갱신
+        }
+        else
+        {
+            Debug.Log($"[InventoryManager] {newItem.GetItemName()} 이미 존재함");
+        }
+    }
     private void PopulateInventory()
     {
         // 기존 슬롯 삭제

@@ -82,8 +82,8 @@ public class StoreManager : MonoBehaviour
             gameManager.SubtractCoin(price);
             Debug.Log($"{item.GetItemName()} 구매 성공! 남은 코인: {gameManager.GetCoin()}");
 
-            // TODO: 인벤토리에 추가하는 로직이 있다면 여기서 호출
-            // InventoryManager.Instance.AddItem(item);
+            // 아이템을 인벤토리에 추가
+            gameManager.AddItemToInventory(item);
         }
         else
         {
