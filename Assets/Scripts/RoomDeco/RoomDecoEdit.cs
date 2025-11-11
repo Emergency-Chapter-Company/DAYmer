@@ -50,6 +50,9 @@ public class RoomDecoEdit : MonoBehaviour
 
     private void Update()
     {
+        if (!isEditMode)
+            return;
+
         // 빈 공간 클릭 시 선택 해제
         if (isEditMode && Input.GetMouseButtonDown(0))
         {
@@ -68,14 +71,6 @@ public class RoomDecoEdit : MonoBehaviour
             }
         }
     }
-
-    private void OnEnable()
-    {
-        // 버튼이 활성화될 때마다 항상 리스너 재등록
-        deleteButton.onClick.RemoveListener(OnDeleteButtonClicked);
-        deleteButton.onClick.AddListener(OnDeleteButtonClicked);
-    }
-
 
     public void EnterEditMode()
     {
@@ -274,13 +269,16 @@ public class RoomDecoEdit : MonoBehaviour
 
         if (selectedItemRenderer != null)
         {
-            originalColor = selectedItemRenderer.material.color;
+            // SpriteRenderer.color로 색상 저장
+            originalColor = selectedItemRenderer.color;
+
+            // 살짝 강조 색상 적용 (파랗게)
             selectedItemRenderer.color = new Color(
                 originalColor.r * 0.8f,
                 originalColor.g * 0.8f,
                 originalColor.b * 1.2f,
                 originalColor.a
-                );
+            );
         }
         deleteButton.interactable = true;
         Debug.Log($"아이템 선택 : {item.name}");
