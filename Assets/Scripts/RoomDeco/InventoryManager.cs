@@ -19,7 +19,6 @@ public class InventoryManager : MonoBehaviour
 
     private void PopulateInventory()
     {
-
         // 기존 슬롯 삭제
         foreach (Transform child in inventoryContent)
         {

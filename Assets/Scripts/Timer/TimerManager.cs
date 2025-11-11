@@ -303,7 +303,7 @@ public class TimerManager : MonoBehaviour
     {
         if (gameManager != null)
         {
-            gameManager.Addcoin(coin);
+            gameManager.AddCoin(coin);
             Debug.Log($"{coin} 코인 추가");
         }
     }

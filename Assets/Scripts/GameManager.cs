@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -8,9 +9,12 @@ public class GameManager : MonoBehaviour
     /* ====== 재화 변수 ====== */
     [Header("재화")]
     [SerializeField]
-    private int normalCoin = 0;
+    private int coin = 0;
     [SerializeField]
     private int specialCoin = 0;
+
+    [Header("아이템")]
+    [SerializeField] private List<RoomDecoItem> itemList = new List<RoomDecoItem>();
 
     void Awake()
     {
@@ -32,42 +36,44 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         /* 초기 재화 설정 */
-        normalCoin = 0;
+        coin = 0;
         specialCoin = 0;
     }
 
     /* ====== 재화 관련 함수 ====== */
-    public int Getcoin() // 일반 코인 가져오기
+    public int GetCoin() // 일반 코인 가져오기
     {
-        return normalCoin;
+        return coin;
     }
 
-    public void Addcoin(int amount) // 일반 코인 추가
+    public void AddCoin(int amount) // 일반 코인 추가
     {
-        normalCoin += amount;
+        coin += amount;
     }
 
-    public void Subtractcoin(int amount) // 일반 코인 차감
+    public void SubtractCoin(int amount) // 일반 코인 차감
     {
-        normalCoin -= amount;
-        if (normalCoin < 0)
-            normalCoin = 0;
+        coin -= amount;
+        if (coin < 0)
+            coin = 0;
     }
 
-    public int GetDiamondcoin() // 다이아몬드 코인 가져오기
+    public int GetSpecialCoin() // 스페셜 코인 가져오기
     {
         return specialCoin;
     }
 
-    public void AddDiamondcoin(int amount) // 다이아몬드 코인 추가
+    public void AddSpecialcoin(int amount) // 스페셜 코인 추가
     {
         specialCoin += amount;
     }
 
-    public void SubtractDiamondCoin(int amount) // 다이아몬드 코인 차감
+    public void SubtractSpecialCoin(int amount) // 스페셜 코인 차감
     {
         specialCoin -= amount;
         if (specialCoin < 0)
             specialCoin = 0;
     }
+
+    
 }

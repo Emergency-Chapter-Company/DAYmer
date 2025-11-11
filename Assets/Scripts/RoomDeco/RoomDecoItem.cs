@@ -28,7 +28,6 @@ using UnityEngine;
 
 public class RoomDecoItem : MonoBehaviour
 {
-    private RoomDecoItem DecoItem;
     private SpriteRenderer spriteRenderer;
     private Sprite sprite;
     private Color itemColor;
@@ -41,6 +40,12 @@ public class RoomDecoItem : MonoBehaviour
     private int itemID = 0;
     [SerializeField]
     private ItemType placementType = ItemType.Floor;
+    //[SerializeField]
+    //private int maxCount = 5; // 최대 배치 가능 갯수
+
+    [Header("Price Info")]
+    [SerializeField]
+    private int price = 10;
 
     [Header("Runtime Data")]
     [SerializeField]
@@ -48,8 +53,7 @@ public class RoomDecoItem : MonoBehaviour
     [SerializeField]
     private Vector2Int gridPosition;
 
-    //[SerializeField] private ItemData2D itemData;
-    //[SerializeField] private int maxCount = 5; // 최대 배치 가능 갯수
+
 
     private void Start()
     {
@@ -140,14 +144,8 @@ public class RoomDecoItem : MonoBehaviour
         return gridPosition;
     }
 
-    //public void SetItemData(RoomDecoItem data)
-    //{
-    //    DecoItem = data;
-    //}
-
-    //public ItemData2D GetItemData() // ItemData2D를 외부에서 가져올 수 있도록 하기
-    //{
-    //    return itemData;
-    //}
-
+    public int GetPrice()
+    {
+        return price;
+    }
 }
