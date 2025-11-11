@@ -4,9 +4,8 @@ using UnityEngine.UI;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [HideInInspector] public ItemData2D itemData;
-
-    
+    /* ====== 아이템 속성 ====== */
+    private RoomDecoItem DecoItem;
     private GameObject draggedObject;
     private RoomDecoEdit editModeManager;
     private GameObject draggingIcon;
@@ -29,7 +28,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // 이 부분은 지워도 되는데 일단 드래그로 컴포넌트 지정하는 거 혹시 오류 생길까봐 남겨는 둠
         // 근데 지워도 될 것 같긴 해
         // 지울까? 말까? 어카지
-        editModeManager = FindObjectOfType<RoomDecoEdit>();         
+        editModeManager = FindObjectOfType<RoomDecoEdit>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -73,13 +72,13 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvasGroup.alpha = 1.0f;
 
         // 마우스 위치에 아이템 배치
-        if (editModeManager != null && itemData.ItemPrefab != null)
+        if (editModeManager != null && DecoItem.GetItemPrefab() != null)
         {
 
             Vector3 spawnPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             spawnPosition.z = 0;
 
-            GameObject placedItem = Instantiate(itemData.ItemPrefab);
+            GameObject placedItem = Instantiate(DecoItem.GetItemPrefab());
             placedItem.transform.position = spawnPosition;
             placedItem.transform.SetParent(editModeManager.GetRoomContainer());
 
@@ -88,7 +87,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 itemComponent = placedItem.AddComponent<RoomDecoItem>();
             }
-            itemComponent.SetItemData(itemData);
+            //itemComponent.SetItemData(DecoItem);
 
             // 아이템선택을 하려면 아이템 프리펩에 Box콜라이더2D가 설정되어야 하는데
             // 이걸 자동으로 해주는 코드
@@ -107,6 +106,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
 
         // 실제 배치 구현 여기추가예정
-        Debug.Log($"드래그 종료: {itemData.ItemName}");
+        Debug.Log($"드래그 종료: {DecoItem.GetItemName()}");
+    }
+
+    public void SetItemData(RoomDecoItem item)
+    {
+        DecoItem = item;
     }
 }

@@ -21,53 +21,38 @@ public enum WallDirection
 public class RoomDecoCore : MonoBehaviour
 {
     [Header("Systems")]
-    [SerializeField] private RoomDecoPlace itemPlacer;
+    [SerializeField]
+    private RoomDecoPlace itemPlacer;
 
     [Header("Grid System")]
-    [SerializeField] private RoomDecoGrid_Floor floorGrid;
-    [SerializeField] private RoomDecoGrid_LeftWall leftWallGrid;
-    [SerializeField] private RoomDecoGrid_RightWall rightWallGrid;
+    [SerializeField]
+    private RoomDecoGrid_Floor floorGrid;
+    [SerializeField]
+    private RoomDecoGrid_LeftWall leftWallGrid;
+    [SerializeField]
+    private RoomDecoGrid_RightWall rightWallGrid;
 
     [Header("Camera")]
-    [SerializeField] private Camera mainCamera;
+    [SerializeField]
+    private Camera mainCamera;
 
     [Header("Test Items")]
-    [SerializeField] private List<ItemData2D> testItems = new List<ItemData2D>();
-
-    private List<RoomDecoItem> placedItems = new List<RoomDecoItem>();
-
-    private void Awake()
-    {
-        if (mainCamera == null)
-            mainCamera = Camera.main;
-
-        if (itemPlacer == null)
-            itemPlacer = FindObjectOfType<RoomDecoPlace>();
-
-        if (floorGrid == null)
-            floorGrid = FindObjectOfType<RoomDecoGrid_Floor>();
-
-        if (leftWallGrid == null)
-            leftWallGrid = FindObjectOfType<RoomDecoGrid_LeftWall>();
-
-        if (rightWallGrid == null)
-            rightWallGrid = FindObjectOfType<RoomDecoGrid_RightWall>();
-
-    }
+    [SerializeField]
+    private List<RoomDecoItem> decoItemList = new List<RoomDecoItem>();
 
     private void Update()
     {
-        //테스트용 키
-        for (int i = 0; i < testItems.Count && i < 9; i++)
+        // 테스트용 키
+        for (int i = 0; i < decoItemList.Count && i < 9; i++)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1 + i))
             {
-                StartPlacingItem(testItems[i]);
+                StartPlacingItem(decoItemList[i]);
             }
         }
     }
 
-    public void StartPlacingItem(ItemData2D itemData)
+    public void StartPlacingItem(RoomDecoItem itemData)
     {
         if (itemPlacer != null && itemData != null)
         {
@@ -77,15 +62,14 @@ public class RoomDecoCore : MonoBehaviour
 
     public void OnItemPlaced(RoomDecoItem item)
     {
-        if (item != null && !placedItems.Contains(item))
+        if (item != null && !decoItemList.Contains(item))
         {
-            placedItems.Add(item);
+            decoItemList.Add(item);
             Debug.Log($"아이템 배치: {item.GetItemName()}");
         }
     }
 
     // 아이템 타입에 따라 적절한 그리드 반환
-
     public RoomDecoGrid GetGridByItemType(ItemType itemType)
     {
         switch (itemType)

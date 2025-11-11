@@ -25,11 +25,7 @@ public class RoomDecoState
         RoomDecoState clone = new RoomDecoState();
         foreach (var item in placedItems)
         {
-            clone.placedItems.Add(new PlacedItemData(
-                item.itemPrefab,
-                item.position,
-                item.rotation
-            ));
+            clone.placedItems.Add(new PlacedItemData(item.itemPrefab, item.position, item.rotation));
         }
         return clone;
     }

@@ -838,8 +838,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryManager
   inventoryContent: {fileID: 1284098361}
   itemSlotPrefab: {fileID: 5392059993235839380, guid: 6accddc3aada3de4c946490f627c0fe6, type: 3}
-  items:
-  - {fileID: 11400000, guid: f09a43bbe32f50d4897cf6faa3ce15fb, type: 2}
+  itemList:
+  - {fileID: 8106412539819301540, guid: b49b57449fcecba418edd444d4adb83c, type: 3}
 --- !u!4 &408152429
 Transform:
   m_ObjectHideFlags: 0
@@ -2813,7 +2813,7 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1551242551}
-  - {fileID: 1607272081}
   - {fileID: 1133313969}
   - {fileID: 408152429}
   - {fileID: 1445514208}
+  - {fileID: 1607272081}

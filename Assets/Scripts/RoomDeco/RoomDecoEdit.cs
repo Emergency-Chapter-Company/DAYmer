@@ -107,18 +107,10 @@ public class RoomDecoEdit : MonoBehaviour
 
             if (itemComponent != null)
             {
-                ItemData2D data = itemComponent.GetItemData();
-                if (data != null)
-                {
-                    prefab = data.ItemPrefab;
-                }
+                prefab = itemComponent.GetItemPrefab();
             }
 
-            PlacedItemData placedata = new PlacedItemData(
-                prefab,
-                child.position,
-                child.rotation
-                );
+            PlacedItemData placedata = new PlacedItemData(prefab, child.position, child.rotation);
             currentState.placedItems.Add(placedata);
         }
         backupState = currentState.Clone();
@@ -178,19 +170,10 @@ public class RoomDecoEdit : MonoBehaviour
 
                 if (itemComponent != null)
                 {
-                    ItemData2D data = itemComponent.GetItemData();
-                    if (data != null)
-                    {
-                        prefab = data.ItemPrefab;
-                    }
+                    prefab = itemComponent.GetItemPrefab();
                 }
 
-
-                PlacedItemData placedata = new PlacedItemData(
-                   prefab,
-                   obj.transform.position,
-                   obj.transform.rotation
-                );
+                PlacedItemData placedata = new PlacedItemData(prefab, obj.transform.position, obj.transform.rotation);
                 currentState.placedItems.Add(placedata);
             }
         }

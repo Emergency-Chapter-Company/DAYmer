@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 // 아이템 배치 시스템
 
@@ -9,8 +10,8 @@ public class RoomDecoPlace : MonoBehaviour
     [SerializeField] private RoomDecoCore coreManager;
     [SerializeField] private Camera mainCamera;
 
-    [Header("Settings")]
-    [SerializeField] private string floorSortingLayer = "Floor";
+ //   [Header("Settings")]
+ //   [SerializeField] private string floorSortingLayer = "Floor";
 
     // 영역 구분 설정
     /*[Header("Area Boundaries")]
@@ -21,17 +22,17 @@ public class RoomDecoPlace : MonoBehaviour
     */
 
     private RoomDecoItem currentItem;
-    private ItemData2D currentItemData;
-    private bool isPlacing = false;
+    //private RoomDecoItem currentItemData;
     private RoomDecoGrid currentGrid;
+    private bool isPlacing = false;
 
     private void Awake()
     {
         if (mainCamera == null)
             mainCamera = Camera.main;
 
-        if(coreManager == null)
-           coreManager = FindObjectOfType<RoomDecoCore>();
+        //if(coreManager == null)
+        //   coreManager = FindObjectOfType<RoomDecoCore>();
     }
 
     private void Update()
@@ -44,11 +45,17 @@ public class RoomDecoPlace : MonoBehaviour
     }
 
     // 아이템 배치를 위한 기본 설정
-    public void StartPlacing(ItemData2D itemData)
+    public void StartPlacing(RoomDecoItem item)
     {
-        if (itemData == null || itemData.Sprite == null)
+        if (item == null)
         {
             Debug.LogWarning("ItemData 또는 Sprite가 Null입니다.");
+            return;
+        }
+
+        if (item.GetSprite() == null)
+        {
+            Debug.LogWarning("아이템의 스프라이트가 설정되어 있지 않습니다.");
             return;
         }
 
@@ -59,7 +66,7 @@ public class RoomDecoPlace : MonoBehaviour
         }
 
         // 아이템 타입에 맞는 그리드 선택
-        currentGrid = coreManager.GetGridByItemType(itemData.PlacementType);
+        currentGrid = coreManager.GetGridByItemType(item.GetPlacementType());
 
         if (currentGrid == null)
         {
@@ -67,38 +74,43 @@ public class RoomDecoPlace : MonoBehaviour
             return;
         }
 
-        // 새 아이템 생성 - 마우스 위치에서
+        ///* 새 아이템 생성 - 마우스 위치에서 */
+        //Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        //GameObject itemInstace = new GameObject(item.GetItemName());
+        //itemInstace.transform.position = mouseWorldPos; // 마우스 위치로 초기화 설정
+
+        ///* 스프라이트 렌더러 추가 */
+        //SpriteRenderer sr = itemInstace.AddComponent<SpriteRenderer>();
+        //sr.sprite = item.GetSprite();
+        //sr.color = item.GetItemColor();
+        //sr.sortingLayerName = floorSortingLayer;
+
+        ///* RoomDecoItem 추가 */
+        //currentItem = itemInstace.AddComponent<RoomDecoItem>();
+        ////currentItem.SetItemData(item);
+        ////currentItem = item;
+        //currentItem.SetPlaced(false);
+
+        //isPlacing = true;
+
+        /* 프리팹 인스턴스 생성 */
         Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        GameObject itemObj = new GameObject(itemData.ItemName);
-        itemObj.transform.position = mouseWorldPos; // 마우스 위치로 초기화 설정
+        var itemInstace = Instantiate(item.gameObject);
+        itemInstace.name = item.GetItemName();
+        itemInstace.transform.position = mouseWorldPos;
 
-
-
-        // 스프라이트 렌더러 추가
-        SpriteRenderer sr = itemObj.AddComponent<SpriteRenderer>();
-        sr.sprite = itemData.Sprite;
-        sr.color = itemData.ItemColor;
-        sr.sortingLayerName = floorSortingLayer;
-
-
-        // RoomDecoItem 추가
-        currentItem = itemObj.AddComponent<RoomDecoItem>();
-        currentItem.SetItemData(itemData);
-        currentItemData = itemData;
-
+        currentItem = itemInstace.GetComponent<RoomDecoItem>();
         currentItem.SetPlaced(false);
+
         isPlacing = true;
 
-        Debug.Log($"아이템 배치 시작: {itemData.ItemName}, 그리드 : {currentGrid.GetType().Name}");
+        Debug.Log($"아이템 배치 시작: {item.GetItemName()}, 그리드 : {currentGrid.GetType().Name}");
     }
 
     private void UpdateItemPosition()
     {
-        
-        
         if (currentItem == null)
             return;
-         
 
         // 마우스 위치 
         Vector2 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -153,16 +165,16 @@ public class RoomDecoPlace : MonoBehaviour
 
         // 올바른 영역-아이템 체크
         ItemType? currentArea = GetAreaType(worldPos);
-        if (currentArea != currentItemData.PlacementType)
+        if (currentArea != currentItem.GetPlacementType())
         {
-            Debug.Log($"아이템을 올바른 영역에 배치해야 합니다. 현재 영역: {currentArea}, 아이템 타입: {currentItemData.PlacementType}");
+            Debug.Log($"아이템을 올바른 영역에 배치해야 합니다. 현재 영역: {currentArea}, 아이템 타입: {currentItem.GetPlacementType()}");
             return;
         }
 
-        Debug.Log($"배치 시도 위치: {gridPos}, 타입 : {currentItemData.PlacementType}");
+        Debug.Log($"배치 시도 위치: {gridPos}, 타입 : {currentItem.GetPlacementType()}");
 
         // 중복 배치 체크
-        bool isOccupied = currentGrid.IsTileOccupied(gridPos, currentItemData.PlacementType);
+        bool isOccupied = currentGrid.IsTileOccupied(gridPos, currentItem.GetPlacementType());
         Debug.Log($"타일 점유 여부: {isOccupied}");
 
         if (isOccupied)
@@ -179,16 +191,13 @@ public class RoomDecoPlace : MonoBehaviour
         }
         */
 
-
         currentItem.SetPlaced(true);
 
-
         // 배치 그리드 등록
-        currentGrid.OccupyTile(gridPos, currentItemData.PlacementType);
+        currentGrid.OccupyTile(gridPos, currentItem.GetPlacementType());
 
         // 레이어 순서 (보이기 우선순위 : 천장 > 바닥 > 벽)
-
-        int sortingOrder = GetSortingOrder(currentItemData.PlacementType, currentItem.transform.position.y);
+        int sortingOrder = GetSortingOrder(currentItem.GetPlacementType(), currentItem.transform.position.y);
         currentItem.SetSortingOrder(sortingOrder);
 
         // 배치결과 전달
@@ -197,12 +206,12 @@ public class RoomDecoPlace : MonoBehaviour
             coreManager.OnItemPlaced(currentItem);
         }
 
-        Debug.Log($"아이템 배치 완료: {currentItemData.ItemName} at {gridPos}");
+        Debug.Log($"아이템 배치 완료: {currentItem.GetItemName()} at {gridPos}");
 
         //배치 모드 종료
         currentItem = null;
         isPlacing = false;
-        currentItemData = null;
+        //currentItemData = null;
     }
 
     private int GetSortingOrder(ItemType type, float yPos)
@@ -224,26 +233,24 @@ public class RoomDecoPlace : MonoBehaviour
 
     private void CancelPlacing()
     {
-        if (currentItem != null && !currentItem.IsPlaced())
+        if (currentItem != null && !currentItem.GetIsPlaced())
         {
             Destroy(currentItem.gameObject);
         }
 
         currentItem = null;
         isPlacing = false;
-        currentItemData = null;
+        //currentItemData = null;
 
         Debug.Log("아이템 배치 취소");
     }
 
     private ItemType? GetAreaType(Vector2 worldPos)
     {
-
         // Y좌표와 X좌표로 영역 구분
         // 왼쪽 위 = LeftWall
         // 중앙 = Floor
         // 오른쪽 아래 = RightWall
-
 
         // 왼쪽 벽 영역
         if (worldPos.x >= -0.5f && worldPos.x <= 4.5f &&
@@ -263,8 +270,8 @@ public class RoomDecoPlace : MonoBehaviour
         return null; // 해당 없음
     }
 
-
-    public bool IsPlacing() => isPlacing;
+    public bool GetIsPlacing()
+    {
+        return isPlacing;
+    }
 }
-
-        

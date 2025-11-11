@@ -49,7 +49,6 @@ public class PlacedItemController : MonoBehaviour
 
         }
     }
-
     private void OnMouseUp()
     {
         isDragging = false;
