@@ -67,6 +67,7 @@ public class StoreManager : MonoBehaviour
 
             // 구매 상태 체크
             bool isOwned = inventoryManager != null && inventoryManager.HasItem(item);
+            bool isAffordable = gameManager.GetCoin() >= item.GetPrice();
 
             icon.sprite = item.GetSprite();
             icon.color = item.GetItemColor();
@@ -81,7 +82,7 @@ public class StoreManager : MonoBehaviour
             else
             {
                 priceText.text = $"{item.GetPrice()} Coin";
-                priceText.color = Color.black;
+                priceText.color = isAffordable ? Color.black : Color.red;
 
                 buyButton.interactable = true;
                 buyButton.onClick.RemoveAllListeners();

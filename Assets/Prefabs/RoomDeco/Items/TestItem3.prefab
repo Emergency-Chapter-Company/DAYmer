@@ -103,9 +103,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f60f07fa5eb20f34e8191c19101e08d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDecoItem
-  itemName: 3
+  itemName: Square
   itemID: 2
   placementType: 2
-  sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  price: 10
   isPlaced: 0
   gridPosition: {x: 1, y: 2}

@@ -5,12 +5,23 @@ using UnityEngine.UI;
 
 public class RoomDecoEdit : MonoBehaviour
 {
+    /* ====== 편집 모드 상태 변수 ====== */
+    private RoomDecoState currentState = new RoomDecoState();
+    private RoomDecoState backupState = null;
+    private List<GameObject> currentPlacedItemList = new List<GameObject>();
+    private bool isEditMode = false;
+
+    /* ====== 선택된 아이템 변수 ====== */
+    private GameObject selectedItem = null;
+    private SpriteRenderer selectedItemRenderer = null;
+    private Color originalColor;
+
+    /* ====== UI 참조 변수 ====== */
     [Header("UI References")]
     [SerializeField] private Button editModeButton;
     [SerializeField] private Button storeButton;
     [SerializeField] private GameObject inventoryPanel;
     [SerializeField] private GameObject editModeUI;      // 취소/확인 버튼 포함하기
-
 
     [Header("Edit Mode UI")]
     [SerializeField] private Button cancelButton;
@@ -20,20 +31,6 @@ public class RoomDecoEdit : MonoBehaviour
 
     [Header("Room Management")]
     [SerializeField] private Transform roomContainer; //아이템들이 배치될 부모 오브젝트
-
-    private RoomDecoState currentState = new RoomDecoState();
-    private RoomDecoState backupState = null;
-    private List<GameObject> currentPlacedItemList = new List<GameObject>();
-
-    // 아이템 선택
-    private GameObject selectedItem = null;
-    private SpriteRenderer selectedItemRenderer = null;
-    private Color originalColor;
-
-    private bool isEditMode = false;
-
-    // 인벤토리 매니저 참조
-    private InventoryManager inventoryManager;
 
     private void Start()
     {
@@ -321,10 +318,10 @@ public class RoomDecoEdit : MonoBehaviour
     {
         return roomContainer;
     }
-    /*
-    public void ResisterPlacedItem(GameObject item)
-    {
-        currentPlacedObjects.Add(item);
-    }
-    */
+
+    //public void ResisterPlacedItem(GameObject item)
+    //{
+    //    currentPlacedObjects.Add(item);
+    //}
+
 }
