@@ -110,10 +110,24 @@ public class RoomDecoItem : MonoBehaviour
 
     public Color GetItemColor()
     {
-        if (itemColor != null) return itemColor;
-        if (spriteRenderer == null)
+        if (spriteRenderer == null) // SpriteRenderer 캐시 없으면 새로 가져오기
             spriteRenderer = GetComponent<SpriteRenderer>();
-        return spriteRenderer != null ? spriteRenderer.color : itemColor = Color.white;
+
+        if (spriteRenderer != null) // SpriteRenderer가 있으면 거기서 색상 읽기
+        {
+            Color c = spriteRenderer.color;
+
+            
+            if (c.a <= 0.01f || (c.r == 0 && c.g == 0 && c.b == 0)) // 만약 완전 투명하거나 검정이면 기본 white로 보정
+                return Color.white;
+
+            return c;
+        }
+        
+        if (itemColor.a <= 0.01f || (itemColor.r == 0 && itemColor.g == 0 && itemColor.b == 0)) // spriteRenderer가 없으면 itemColor 값 사용
+            return Color.white; // (만약 기본값이면 white로 보정)
+
+        return itemColor;
     }
 
     public bool GetIsPlaced()

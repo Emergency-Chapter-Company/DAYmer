@@ -839,8 +839,8 @@ MonoBehaviour:
   inventoryContent: {fileID: 1284098361}
   itemSlotPrefab: {fileID: 5392059993235839380, guid: 6accddc3aada3de4c946490f627c0fe6, type: 3}
   itemList:
-  - {fileID: 8106412539819301540, guid: b49b57449fcecba418edd444d4adb83c, type: 3}
   - {fileID: 3925423316655327029, guid: ce9b437e547fdf94db324f20a459e718, type: 3}
+  - {fileID: 8106412539819301540, guid: b49b57449fcecba418edd444d4adb83c, type: 3}
   - {fileID: 6416989634251939068, guid: 833570794741fab42ad869c95a4e4cdd, type: 3}
 --- !u!4 &408152429
 Transform:

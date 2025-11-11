@@ -36,6 +36,7 @@ public class InventoryManager : MonoBehaviour
             TextMeshProUGUI nameText = slot.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
 
             icon.sprite = item.GetSprite();
+            icon.color = item.GetItemColor();
             nameText.text = item.GetItemName();
 
             // 드래그 기능
