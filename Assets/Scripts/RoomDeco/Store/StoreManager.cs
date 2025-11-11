@@ -7,6 +7,7 @@ public class StoreManager : MonoBehaviour
 {
     /* ====== 객체 변수 ====== */
     private GameManager gameManager;
+    private InventoryManager inventoryManager;
 
     [Header("UI References")]
     [SerializeField] private Button storeButton;
@@ -25,6 +26,7 @@ public class StoreManager : MonoBehaviour
         exitButton.onClick.AddListener(CloseStore);
 
         gameManager = GameManager.instance;
+        inventoryManager = GetComponentInChildren<InventoryManager>();
 
         storePanel.SetActive(false);
         exitButton.gameObject.SetActive(false);
@@ -63,17 +65,32 @@ public class StoreManager : MonoBehaviour
             Button buyButton = slot.transform.Find("BuyButton").GetComponent<Button>();
             TextMeshProUGUI priceText = slot.transform.Find("BuyButton/PriceText").GetComponent<TextMeshProUGUI>();
 
+            // 구매 상태 체크
+            bool isOwned = inventoryManager != null && inventoryManager.HasItem(item);
+
             icon.sprite = item.GetSprite();
             icon.color = item.GetItemColor();
             nameText.text = item.GetItemName();
-            priceText.text = $"{item.GetPrice()} Coin";
 
-            buyButton.onClick.RemoveAllListeners();
-            buyButton.onClick.AddListener(() => TryBuyItem(item));
+            if (isOwned) // 이미 구매한 아이템
+            {
+                buyButton.interactable = false;
+                priceText.text = "Sold Out";
+                priceText.color = Color.gray;
+            }
+            else
+            {
+                priceText.text = $"{item.GetPrice()} Coin";
+                priceText.color = Color.black;
+
+                buyButton.interactable = true;
+                buyButton.onClick.RemoveAllListeners();
+                buyButton.onClick.AddListener(() => TryBuyItem(item, priceText, buyButton));
+            }
         }
     }
 
-    private void TryBuyItem(RoomDecoItem item)
+    private void TryBuyItem(RoomDecoItem item, TextMeshProUGUI priceText, Button buyButton)
     {
         if (gameManager == null)
         {
@@ -82,13 +99,18 @@ public class StoreManager : MonoBehaviour
         }
 
         int price = item.GetPrice();
+
         if (gameManager.GetCoin() >= price)
         {
             gameManager.SubtractCoin(price);
+            gameManager.AddItemToInventory(item);
+
             Debug.Log($"{item.GetItemName()} 구매 성공! 남은 코인: {gameManager.GetCoin()}");
 
-            // 아이템을 인벤토리에 추가
-            gameManager.AddItemToInventory(item);
+            // UI 갱신
+            priceText.text = "Sold Out";
+            priceText.color = Color.gray;
+            buyButton.interactable = false;
         }
         else
         {
