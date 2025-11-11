@@ -129,41 +129,58 @@ public class RoomDecoEdit : MonoBehaviour
 
     private void RestoreBackupState()
     {
-        // 현재 배치된 아이템 제거
-        foreach (GameObject obj in currentPlacedItemList)
-        {
-            if (obj != null)
-            {
-                Destroy(obj);
-            }
-        }
-        currentPlacedItemList.Clear();
+        // 현재 아이템 개수와 백업 개수 비교
+        int backupCount = backupState.placedItems.Count;
+        int currentCount = currentPlacedItemList.Count;
 
-        // 백업된 상태로 복원
-        if (backupState != null)
+        // 현재 아이템이 더 많으면 초과분 삭제
+        for (int i = backupCount; i < currentCount; i++)
         {
-            foreach (PlacedItemData data in backupState.placedItems)
+            if (currentPlacedItemList[i] != null)
+                Destroy(currentPlacedItemList[i]);
+        }
+
+        // 아이템 리스트 정리
+        if (currentCount > backupCount)
+            currentPlacedItemList.RemoveRange(backupCount, currentCount - backupCount);
+
+        // 기존 아이템 유지하면서 상태만 복원
+        for (int i = 0; i < backupCount; i++)
+        {
+            PlacedItemData data = backupState.placedItems[i];
+
+            if (i < currentPlacedItemList.Count && currentPlacedItemList[i] != null)
             {
+                GameObject existing = currentPlacedItemList[i];
+                existing.transform.position = data.position;
+                existing.transform.rotation = data.rotation;
+
+                // 컨트롤러 재연결
+                var controller = existing.GetComponent<PlacedItemController>();
+                if (controller == null)
+                    controller = existing.AddComponent<PlacedItemController>();
+                controller.SetEditManager(this);
+            }
+            else
+            {
+                // 없는 경우 새로 추가
                 if (data.itemPrefab != null)
                 {
                     GameObject restored = Instantiate(data.itemPrefab, roomContainer);
                     restored.transform.position = data.position;
                     restored.transform.rotation = data.rotation;
 
-                    // PlacedItemController 추가
-                    if (restored.GetComponent<PlacedItemController>() == null)
-                    {
-                        PlacedItemController controller = restored.AddComponent<PlacedItemController>();
-                        controller.SetEditManager(this);
-                    }
-
+                    var controller = restored.GetComponent<PlacedItemController>();
+                    if (controller == null)
+                        controller = restored.AddComponent<PlacedItemController>();
+                    controller.SetEditManager(this);
 
                     currentPlacedItemList.Add(restored);
                 }
-
             }
-            Debug.Log($"복원 : {backupState.placedItems.Count}개 아이템");
         }
+
+        Debug.Log($"복원 완료: {backupCount}개 아이템 복원");
     }
 
     private void ApplyCurrentState()
