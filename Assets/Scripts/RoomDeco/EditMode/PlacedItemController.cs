@@ -5,12 +5,12 @@ public class PlacedItemController : MonoBehaviour
     private RoomDecoEdit editManager;
     private bool isDragging = false;
     private Vector3 offset;
-    private SpriteRenderer spriteRenderer;
+    //private SpriteRenderer spriteRenderer;
 
-    private void Awake()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
+    //private void Awake()
+    //{
+    //    spriteRenderer = GetComponent<SpriteRenderer>();
+    //}
 
     public void SetEditManager(RoomDecoEdit manager)
     {
@@ -49,7 +49,6 @@ public class PlacedItemController : MonoBehaviour
 
         }
     }
-
     private void OnMouseUp()
     {
         isDragging = false;

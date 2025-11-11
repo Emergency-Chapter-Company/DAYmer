@@ -153,10 +153,10 @@ MonoBehaviour:
   leftWallGrid: {fileID: 1653334366}
   rightWallGrid: {fileID: 897611724}
   mainCamera: {fileID: 519420031}
-  testItems:
-  - {fileID: 11400000, guid: 736dc60d1e16aba44b2ed657699947c0, type: 2}
-  - {fileID: 11400000, guid: 30f838095148e864ebad93afb4d137ad, type: 2}
-  - {fileID: 11400000, guid: 66136e39b241af9499b605f7043e7903, type: 2}
+  decoItemList:
+  - {fileID: 3925423316655327029, guid: ce9b437e547fdf94db324f20a459e718, type: 3}
+  - {fileID: 8106412539819301540, guid: b49b57449fcecba418edd444d4adb83c, type: 3}
+  - {fileID: 6416989634251939068, guid: 833570794741fab42ad869c95a4e4cdd, type: 3}
 --- !u!4 &350352562
 Transform:
   m_ObjectHideFlags: 0
@@ -864,7 +864,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RoomDecoPlace
   coreManager: {fileID: 350352561}
   mainCamera: {fileID: 519420031}
-  floorSortingLayer: Floor
 --- !u!4 &1647297686
 Transform:
   m_ObjectHideFlags: 0

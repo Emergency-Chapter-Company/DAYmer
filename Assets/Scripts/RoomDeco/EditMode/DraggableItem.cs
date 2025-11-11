@@ -4,9 +4,8 @@ using UnityEngine.UI;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [HideInInspector] public ItemData2D itemData;
-
-    
+    /* ====== 아이템 속성 ====== */
+    private RoomDecoItem DecoItem;
     private GameObject draggedObject;
     private RoomDecoEdit editModeManager;
     private GameObject draggingIcon;
@@ -29,24 +28,50 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // 이 부분은 지워도 되는데 일단 드래그로 컴포넌트 지정하는 거 혹시 오류 생길까봐 남겨는 둠
         // 근데 지워도 될 것 같긴 해
         // 지울까? 말까? 어카지
-        editModeManager = FindObjectOfType<RoomDecoEdit>();         
+        editModeManager = FindObjectOfType<RoomDecoEdit>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // 시작 -  드래그 아이콘 생성
+        // 드래그 아이콘 생성
+        if (canvas == null)
+            canvas = GetComponentInParent<Canvas>();
+
+        // 드래그 미리보기 아이콘 생성
         draggedObject = new GameObject("DraggingIcon");
-        draggedObject.transform.SetParent(canvas.transform);
+        draggedObject.transform.SetParent(canvas.transform, false);
 
         Image image = draggedObject.AddComponent<Image>();
-        image.sprite = GetComponent<Image>().sprite;
-        image.raycastTarget = false;        // 드래그 아이콘이 다른 UI 요소와 상호작용하지 않도록 설정
-                                            
+
+        // RoomDecoItem 프리팹의 스프라이트 직접 사용
+        if (DecoItem != null)
+        {
+            SpriteRenderer sr = DecoItem.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                image.sprite = sr.sprite; // 프리팹의 실제 스프라이트
+                image.color = sr.color; // 프리팹의 실제 색상
+            }
+            else
+            {
+                image.sprite = GetComponent<Image>().sprite; // fallback
+                image.color = Color.white;
+            }
+        }
+        else
+        {
+            image.sprite = GetComponent<Image>().sprite; // fallback
+            image.color = Color.white;
+        }
+
+        image.preserveAspect = true;
+        image.raycastTarget = false;
+
         RectTransform dragRect = draggedObject.GetComponent<RectTransform>();
-        dragRect.sizeDelta = new Vector2(100, 100); // 원하는 크기로 설정
+        dragRect.sizeDelta = new Vector2(70, 70); // 살짝 작게
+        dragRect.pivot = new Vector2(0.5f, 0.5f);
 
         //원본 슬롯 반투명
-        
         canvasGroup.alpha = 0.6f;
         
         Debug.Log("드래그 기능 활성");
@@ -73,13 +98,12 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvasGroup.alpha = 1.0f;
 
         // 마우스 위치에 아이템 배치
-        if (editModeManager != null && itemData.ItemPrefab != null)
+        if (editModeManager != null && DecoItem.GetItemPrefab() != null)
         {
-
             Vector3 spawnPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             spawnPosition.z = 0;
 
-            GameObject placedItem = Instantiate(itemData.ItemPrefab);
+            GameObject placedItem = Instantiate(DecoItem.GetItemPrefab());
             placedItem.transform.position = spawnPosition;
             placedItem.transform.SetParent(editModeManager.GetRoomContainer());
 
@@ -88,25 +112,37 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 itemComponent = placedItem.AddComponent<RoomDecoItem>();
             }
-            itemComponent.SetItemData(itemData);
+            //itemComponent.SetItemData(DecoItem);
 
             // 아이템선택을 하려면 아이템 프리펩에 Box콜라이더2D가 설정되어야 하는데
             // 이걸 자동으로 해주는 코드
             // 일단 이거 없이 해보니까 선택이 안되가지고 넣음
             // 코드가 아니더라도 프리펩에서 설정하면 되긴하는데 자동 코드가 편할 것 같음
-            if (placedItem.GetComponent<Collider2D>() ==null )
+            if (placedItem.GetComponent<Collider2D>() == null)
             {
                 BoxCollider2D collider =placedItem.AddComponent<BoxCollider2D>();
 
                 //스프라이트 크기에 맞춰 자동 조정됨
                 Debug.Log($"Collider2D 자동 추가 : {placedItem.name}");
             }
-            
+
+            ///* 스프라이트 렌더러의 머티리얼과 색상 설정 */
+            //SpriteRenderer sr = placedItem.GetComponentInChildren<SpriteRenderer>();
+            //if (sr != null)
+            //{
+            //    sr.color = DecoItem.GetItemColor(); // 혹은 Color.white
+            //}
+
             // 편집 모드 매니저에 배치된 아이템 등록
             editModeManager.AddPlacedItem(placedItem);
         }
 
         // 실제 배치 구현 여기추가예정
-        Debug.Log($"드래그 종료: {itemData.ItemName}");
+        Debug.Log($"드래그 종료: {DecoItem.GetItemName()}");
+    }
+
+    public void SetItemData(RoomDecoItem item)
+    {
+        DecoItem = item;
     }
 }

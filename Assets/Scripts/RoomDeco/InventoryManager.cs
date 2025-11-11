@@ -1,6 +1,4 @@
-using NUnit.Framework.Interfaces;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +10,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private GameObject itemSlotPrefab;
 
     [Header("Inventory Items")]
-    [SerializeField] private List<ItemData2D> items = new List<ItemData2D>();
+    [SerializeField] private List<RoomDecoItem> itemList = new List<RoomDecoItem>();
 
     private void Start()
     {
@@ -21,7 +19,6 @@ public class InventoryManager : MonoBehaviour
 
     private void PopulateInventory()
     {
-
         // 기존 슬롯 삭제
         foreach (Transform child in inventoryContent)
         {
@@ -29,7 +26,7 @@ public class InventoryManager : MonoBehaviour
         }
 
         // 아이템 슬롯 생성
-        foreach (ItemData2D item in items)
+        foreach (RoomDecoItem item in itemList)
         {
             GameObject slot = Instantiate(itemSlotPrefab, inventoryContent);
 
@@ -37,15 +34,33 @@ public class InventoryManager : MonoBehaviour
             Image icon = slot.transform.Find("ItemIcon").GetComponent<Image>();
             TextMeshProUGUI nameText = slot.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
 
-            icon.sprite = item.Sprite;
-            nameText.text = item.ItemName;
+            icon.sprite = item.GetSprite();
+            icon.color = item.GetItemColor();
+            nameText.text = item.GetItemName();
 
             // 드래그 기능
             DraggableItem draggable = slot.AddComponent<DraggableItem>();
-            draggable.itemData = item;
-
-
+            draggable.SetItemData(item);
         }
     }
 
+    public void AddItem(RoomDecoItem newItem)
+    {
+        if (!itemList.Contains(newItem))
+        {
+            itemList.Add(newItem);
+            Debug.Log($"[InventoryManager] {newItem.GetItemName()} 추가됨");
+
+            PopulateInventory(); // UI 갱신
+        }
+        else
+        {
+            Debug.Log($"[InventoryManager] {newItem.GetItemName()} 이미 존재함");
+        }
+    }
+
+    public bool HasItem(RoomDecoItem item)
+    {
+        return itemList.Contains(item);
+    }
 }
