@@ -21,7 +21,7 @@ public class RoomDecoEdit : MonoBehaviour
 
     private RoomDecoState currentState = new RoomDecoState();
     private RoomDecoState backupState = null;
-    private List<GameObject> currentPlacedObjects = new List<GameObject>();
+    private List<GameObject> currentPlacedItemList = new List<GameObject>();
 
     // 아이템 선택
     private GameObject selectedItem = null;
@@ -35,6 +35,7 @@ public class RoomDecoEdit : MonoBehaviour
 
     private void Start()
     {
+        /* 버튼 리스너 등록 */
         editModeButton.onClick.AddListener(EnterEditMode);
         cancelButton.onClick.AddListener(OnCancelButtonClicked);
         confirmButton.onClick.AddListener(OnConfirmButtonClicked);
@@ -52,8 +53,14 @@ public class RoomDecoEdit : MonoBehaviour
         // 빈 공간 클릭 시 선택 해제
         if (isEditMode && Input.GetMouseButtonDown(0))
         {
+            // UI 클릭이면 무시
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+                return;
+
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+
+            Debug.Log($"Raycast2D Hit : {hit.collider}");
 
             if (hit.collider == null)
             {
@@ -61,6 +68,14 @@ public class RoomDecoEdit : MonoBehaviour
             }
         }
     }
+
+    private void OnEnable()
+    {
+        // 버튼이 활성화될 때마다 항상 리스너 재등록
+        deleteButton.onClick.RemoveListener(OnDeleteButtonClicked);
+        deleteButton.onClick.AddListener(OnDeleteButtonClicked);
+    }
+
 
     public void EnterEditMode()
     {
@@ -120,14 +135,14 @@ public class RoomDecoEdit : MonoBehaviour
     private void RestoreBackupState()
     {
         // 현재 배치된 아이템 제거
-        foreach (GameObject obj in currentPlacedObjects)
+        foreach (GameObject obj in currentPlacedItemList)
         {
             if (obj != null)
             {
                 Destroy(obj);
             }
         }
-        currentPlacedObjects.Clear();
+        currentPlacedItemList.Clear();
 
         // 백업된 상태로 복원
         if (backupState != null)
@@ -148,7 +163,7 @@ public class RoomDecoEdit : MonoBehaviour
                     }
 
 
-                    currentPlacedObjects.Add(restored);
+                    currentPlacedItemList.Add(restored);
                 }
 
             }
@@ -161,7 +176,7 @@ public class RoomDecoEdit : MonoBehaviour
         //현재 배치상태 확정
         currentState.placedItems.Clear();
 
-        foreach (GameObject obj in currentPlacedObjects)
+        foreach (GameObject obj in currentPlacedItemList)
         {
             if (obj != null)
             {
@@ -185,14 +200,14 @@ public class RoomDecoEdit : MonoBehaviour
     {
         Debug.Log("편집 모드 초기화 버튼이 클릭되었습니다.");
         // 모든 배치 아이템 제거
-        foreach (GameObject obj in currentPlacedObjects)
+        foreach (GameObject obj in currentPlacedItemList)
         {
             if (obj != null)
             {
                 Destroy(obj);
             }
         }
-        currentPlacedObjects.Clear();
+        currentPlacedItemList.Clear();
 
         DeselectItem();
 
@@ -202,12 +217,13 @@ public class RoomDecoEdit : MonoBehaviour
     // 아이템 배치 개별 삭제 버튼
     private void OnDeleteButtonClicked()
     {
+        Debug.Log($"선택된 아이템 확인!! : {selectedItem.name}");
         if (selectedItem != null)
         {
             Debug.Log($"선택된 아이템 삭제: {selectedItem.name}");
 
             // 리스트에서 제거
-            currentPlacedObjects.Remove(selectedItem);
+            currentPlacedItemList.Remove(selectedItem);
 
             // GameObject 삭제
             Destroy(selectedItem);
@@ -239,7 +255,7 @@ public class RoomDecoEdit : MonoBehaviour
     // 외부에서 아이템 추가 시 호출
     public void AddPlacedItem(GameObject item)
     {
-        currentPlacedObjects.Add(item);
+        currentPlacedItemList.Add(item);
 
         //PlacedItemController 추가
         if (item.GetComponent<PlacedItemController>() == null)
@@ -251,12 +267,11 @@ public class RoomDecoEdit : MonoBehaviour
 
     public void SelectPlacedItem(GameObject item)
     {
-
         // 이전 선택 해제
         DeselectItem();
 
-        // selectedItem = Item;
-        // selectedItemRenderer = selectedItem.GetComponent<SpriteRenderer>();
+        selectedItem = item;
+        selectedItemRenderer = selectedItem.GetComponent<SpriteRenderer>();
 
         if (selectedItemRenderer != null)
         {
@@ -269,7 +284,7 @@ public class RoomDecoEdit : MonoBehaviour
                 );
         }
         deleteButton.interactable = true;
-        // Debug.Log($"아이템 선택 : {Item.name}");
+        Debug.Log($"아이템 선택 : {item.name}");
     }
 
     public void DeselectItem()

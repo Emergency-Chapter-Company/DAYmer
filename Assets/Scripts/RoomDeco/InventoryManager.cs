@@ -43,5 +43,4 @@ public class InventoryManager : MonoBehaviour
             draggable.SetItemData(item);
         }
     }
-
 }

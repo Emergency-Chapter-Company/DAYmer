@@ -92,7 +92,10 @@ public class RoomDecoItem : MonoBehaviour
 
     public Sprite GetSprite()
     {
-        return sprite;
+        if (sprite != null) return sprite;
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        return spriteRenderer != null ? spriteRenderer.sprite : null;
     }
 
     public GameObject GetItemPrefab()
@@ -107,7 +110,10 @@ public class RoomDecoItem : MonoBehaviour
 
     public Color GetItemColor()
     {
-        return itemColor;
+        if (itemColor != null) return itemColor;
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        return spriteRenderer != null ? spriteRenderer.color : itemColor = Color.white;
     }
 
     public bool GetIsPlaced()

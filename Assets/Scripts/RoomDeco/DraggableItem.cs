@@ -74,7 +74,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // 마우스 위치에 아이템 배치
         if (editModeManager != null && DecoItem.GetItemPrefab() != null)
         {
-
             Vector3 spawnPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             spawnPosition.z = 0;
 
@@ -93,14 +92,21 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             // 이걸 자동으로 해주는 코드
             // 일단 이거 없이 해보니까 선택이 안되가지고 넣음
             // 코드가 아니더라도 프리펩에서 설정하면 되긴하는데 자동 코드가 편할 것 같음
-            if (placedItem.GetComponent<Collider2D>() ==null )
+            if (placedItem.GetComponent<Collider2D>() == null)
             {
                 BoxCollider2D collider =placedItem.AddComponent<BoxCollider2D>();
 
                 //스프라이트 크기에 맞춰 자동 조정됨
                 Debug.Log($"Collider2D 자동 추가 : {placedItem.name}");
             }
-            
+
+            ///* 스프라이트 렌더러의 머티리얼과 색상 설정 */
+            //SpriteRenderer sr = placedItem.GetComponentInChildren<SpriteRenderer>();
+            //if (sr != null)
+            //{
+            //    sr.color = DecoItem.GetItemColor(); // 혹은 Color.white
+            //}
+
             // 편집 모드 매니저에 배치된 아이템 등록
             editModeManager.AddPlacedItem(placedItem);
         }
