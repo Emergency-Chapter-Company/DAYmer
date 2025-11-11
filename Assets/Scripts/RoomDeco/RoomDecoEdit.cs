@@ -217,7 +217,6 @@ public class RoomDecoEdit : MonoBehaviour
     // 아이템 배치 개별 삭제 버튼
     private void OnDeleteButtonClicked()
     {
-        Debug.Log($"선택된 아이템 확인!! : {selectedItem.name}");
         if (selectedItem != null)
         {
             Debug.Log($"선택된 아이템 삭제: {selectedItem.name}");
