@@ -33,19 +33,45 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // 시작 -  드래그 아이콘 생성
+        // 드래그 아이콘 생성
+        if (canvas == null)
+            canvas = GetComponentInParent<Canvas>();
+
+        // 드래그 미리보기 아이콘 생성
         draggedObject = new GameObject("DraggingIcon");
-        draggedObject.transform.SetParent(canvas.transform);
+        draggedObject.transform.SetParent(canvas.transform, false);
 
         Image image = draggedObject.AddComponent<Image>();
-        image.sprite = GetComponent<Image>().sprite;
-        image.raycastTarget = false;        // 드래그 아이콘이 다른 UI 요소와 상호작용하지 않도록 설정
-                                            
+
+        // RoomDecoItem 프리팹의 스프라이트 직접 사용
+        if (DecoItem != null)
+        {
+            SpriteRenderer sr = DecoItem.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                image.sprite = sr.sprite; // 프리팹의 실제 스프라이트
+                image.color = sr.color; // 프리팹의 실제 색상
+            }
+            else
+            {
+                image.sprite = GetComponent<Image>().sprite; // fallback
+                image.color = Color.white;
+            }
+        }
+        else
+        {
+            image.sprite = GetComponent<Image>().sprite; // fallback
+            image.color = Color.white;
+        }
+
+        image.preserveAspect = true;
+        image.raycastTarget = false;
+
         RectTransform dragRect = draggedObject.GetComponent<RectTransform>();
-        dragRect.sizeDelta = new Vector2(100, 100); // 원하는 크기로 설정
+        dragRect.sizeDelta = new Vector2(70, 70); // 살짝 작게
+        dragRect.pivot = new Vector2(0.5f, 0.5f);
 
         //원본 슬롯 반투명
-        
         canvasGroup.alpha = 0.6f;
         
         Debug.Log("드래그 기능 활성");
