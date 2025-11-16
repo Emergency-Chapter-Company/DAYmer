@@ -9,7 +9,7 @@ public class SaveData
     public int specialCoin;
 
     // 저장용 TimeRecord 데이터 리스트
-    public List<TimeRecordData> savedRecords = new List<TimeRecordData>();
+    public List<TimeRecordData> savedTimeRecords = new List<TimeRecordData>();
 }
 
 [System.Serializable]
@@ -21,8 +21,8 @@ public class TimeRecordData
 
 public class SaveController : MonoBehaviour
 {
-    private string path; // 저장 경로
-    private string folderPath; // 저장 폴더 경로
+    private string path;        // 저장 경로
+    private string folderPath;  // 저장 폴더 경로
 
     private void Awake()
     {

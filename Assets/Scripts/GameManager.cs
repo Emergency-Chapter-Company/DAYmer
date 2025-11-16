@@ -72,9 +72,10 @@ public class GameManager : MonoBehaviour
         specialCoin = LoadedData.specialCoin;
 
         if (timerManager != null)
-            timerManager.LoadRecords(LoadedData.savedRecords);
+            timerManager.LoadRecords(LoadedData.savedTimeRecords);
 
         Debug.Log("게임 데이터 로드 완료");
+        Debug.Log($"코인: {coin}, 스페셜 코인: {specialCoin}");
     }
 
     public void SaveGame()
@@ -91,7 +92,7 @@ public class GameManager : MonoBehaviour
         // 시간 기록 저장
         if (timerManager != null)
         {
-            data.savedRecords = timerManager.GetRecordData();
+            data.savedTimeRecords = timerManager.GetRecordData();
         }
 
         saveController.Save(data);
