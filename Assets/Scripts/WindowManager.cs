@@ -82,6 +82,8 @@ public class WindowManager : MonoBehaviour
     {
         // 씬이 바뀐 후 항상 위 적용
         WindowSetting(GetCurrentSceneScreenX(), GetCurrentSceneScreenY());
+
+        GameManager.instance.LoadGame(); // 씬 전환 시 게임 데이터 로드
     }
 
     private void WindowSetting(int width, int height)
