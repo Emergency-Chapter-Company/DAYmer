@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     /* ====== 컴포넌트 ====== */
     private SaveController saveController;
+    private SaveData LoadedData;
 
     /* ====== 재화 변수 ====== */
     [Header("재화")]
@@ -37,13 +38,22 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        saveController = GetComponent<SaveController>();
     }
 
     void Start()
     {
-        saveController = GetComponent<SaveController>();
+        //LoadGame();
+    }
 
-        LoadGame();
+    public void RegisterTimerManager(TimerManager manager)
+    {
+        timerManager = manager;
+
+        //// 저장된 데이터가 이미 로드된 상태라면 Timer UI 즉시 반영
+        //if (LoadedData != null)
+        //    timerManager.LoadRecords(LoadedData.savedRecords);
     }
 
     public void LoadGame()
@@ -54,14 +64,14 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        SaveData data = saveController.Load();
+        LoadedData = saveController.Load();
 
         /* 저장된 데이터 반영 */
-        coin = data.coin;
-        specialCoin = data.specialCoin;
+        coin = LoadedData.coin;
+        specialCoin = LoadedData.specialCoin;
 
         if (timerManager != null)
-            timerManager.LoadRecords(data.savedRecords);
+            timerManager.LoadRecords(LoadedData.savedRecords);
 
         Debug.Log("게임 데이터 로드 완료");
     }

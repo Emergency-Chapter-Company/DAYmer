@@ -22,32 +22,53 @@ public class TimeRecordData
 public class SaveController : MonoBehaviour
 {
     private string path; // 저장 경로
+    private string folderPath; // 저장 폴더 경로
 
     private void Awake()
     {
         //path = Application.persistentDataPath + "/savedata.json";
-        path = Path.Combine(Application.dataPath, "SaveData.json"); // (디버깅) 프로젝트 경로로 설정
+
+        folderPath = Path.Combine(
+#if UNITY_EDITOR
+        Application.dataPath
+#else
+        Application.persistentDataPath
+#endif
+        , "Save");
+        path = Path.Combine(folderPath, "SaveData.json");
+
+        // 폴더 없으면 자동 생성
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+            Debug.Log($"📁 Save 폴더 생성됨: {folderPath}");
+        }
     }
 
     public SaveData Load()
     {
         if (!File.Exists(path))
         {
-            Debug.Log($"세이브 파일 생성 : {path}");
+            Debug.Log($"⚠️ 세이브 파일 없음, 새로 생성 : {path}");
             Save(new SaveData());
             return new SaveData();
         }
 
         string json = File.ReadAllText(path);
         SaveData loaded = JsonUtility.FromJson<SaveData>(json);
-        Debug.Log($"로드 완료 : {path}");
+        Debug.Log($"📂 저장 데이터 로드 완료 : {path}");
         return loaded;
     }
 
     public void Save(SaveData saveData)
     {
         string json = JsonUtility.ToJson(saveData, true);
+
+        // 저장 전 폴더 검사
+        if (!Directory.Exists(folderPath))
+            Directory.CreateDirectory(folderPath);
+
         File.WriteAllText(path, json);
-        Debug.Log($"세이브 완료 : {path}");
+        Debug.Log($"💾 세이브 완료 : {path}");
     }
 }

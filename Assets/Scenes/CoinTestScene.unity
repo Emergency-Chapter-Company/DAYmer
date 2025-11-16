@@ -1530,6 +1530,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 979258322}
   m_CullTransparentMesh: 1
+--- !u!114 &991421298 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3093748815386423252, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}
+  m_PrefabInstance: {fileID: 8862962744746621913}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e62a1fcab75a854ea10f1a386be60ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimerManager
 --- !u!1 &991423235
 GameObject:
   m_ObjectHideFlags: 0
@@ -1783,6 +1794,10 @@ PrefabInstance:
     - target: {fileID: 542689989753382201, guid: d303760eecc341c4e91e56f68cf6b5c7, type: 3}
       propertyPath: m_Name
       value: WindowManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 542689989753382201, guid: d303760eecc341c4e91e56f68cf6b5c7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8436141192202675599, guid: d303760eecc341c4e91e56f68cf6b5c7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2343,6 +2358,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 288007910699296109, guid: 3a77498eda96856419743c0102f1086e, type: 3}
+      propertyPath: timerManager
+      value: 
+      objectReference: {fileID: 991421298}
     - target: {fileID: 3784666986067338954, guid: 3a77498eda96856419743c0102f1086e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

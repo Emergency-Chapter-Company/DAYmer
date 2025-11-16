@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class WindowManager : MonoBehaviour
 {
@@ -71,6 +72,8 @@ public class WindowManager : MonoBehaviour
     {
         // 씬 로드 후 항상 위 적용
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        StartCoroutine(LoadGameDelayed());
     }
 
     private void OnDisable()
@@ -82,8 +85,6 @@ public class WindowManager : MonoBehaviour
     {
         // 씬이 바뀐 후 항상 위 적용
         WindowSetting(GetCurrentSceneScreenX(), GetCurrentSceneScreenY());
-
-        GameManager.instance.LoadGame(); // 씬 전환 시 게임 데이터 로드
     }
 
     private void WindowSetting(int width, int height)
@@ -133,5 +134,14 @@ public class WindowManager : MonoBehaviour
             SceneManager.LoadScene(timerSceneName);
             Screen.SetResolution(timerScreenX, timerScreenY, false);
         }
+    }
+
+    private IEnumerator LoadGameDelayed()
+    {
+        // 최소 한 프레임 UI 생성 기다림
+        yield return null;
+        yield return new WaitForEndOfFrame();
+
+        GameManager.instance.LoadGame();
     }
 }
