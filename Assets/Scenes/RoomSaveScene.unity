@@ -127,10 +127,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 288007910699296109, guid: 3a77498eda96856419743c0102f1086e, type: 3}
-      propertyPath: inventoryManager
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 3784666986067338954, guid: 3a77498eda96856419743c0102f1086e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1685
@@ -488,6 +484,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2356786209469379178, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2356786209469379178, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3411058027423975737, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3411058027423975737, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3411058027423975737, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4757198572683237795, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -528,6 +544,58 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5700833322719514405, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700833322719514405, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5700833322719514405, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6734418776187565038, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6734418776187565038, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6947432511701730125, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6947432511701730125, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7678963027204261189, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7678963027204261189, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8072949180551174724, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8072949180551174724, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8091143481207019570, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8091143481207019570, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8773601076629193671, guid: d5d87ed5d469eb744a58bfe5a39bdbeb, type: 3}
       propertyPath: m_Name
       value: RoomDecoManager
@@ -544,5 +612,5 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1607272081}
-  - {fileID: 6953262363672386634}
   - {fileID: 97182577}
+  - {fileID: 6953262363672386634}

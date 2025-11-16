@@ -20,13 +20,18 @@ public class InventoryManager : MonoBehaviour
     private void Awake()
     {
         gameManager = GameManager.instance;
-
-        if (gameManager != null)
-            gameManager.RegisterInventoryManager(this);
     }
 
     private void Start()
     {
+        if (gameManager == null)
+            gameManager = GameManager.instance; // 두 번째 안전 체크
+
+        if (gameManager != null)
+            gameManager.RegisterInventoryManager(this);
+        else
+            Debug.LogError("[InventoryManager] GameManager 인스턴스 없음");
+
         PopulateInventory();
     }
 

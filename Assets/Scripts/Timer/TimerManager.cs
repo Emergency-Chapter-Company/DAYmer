@@ -38,12 +38,19 @@ public class TimerManager : MonoBehaviour
     {
         gameManager = GameManager.instance;
 
-        if (gameManager != null)
-            gameManager.RegisterTimerManager(this);
+        
     }
 
     private void Start()
     {
+        if (gameManager == null)
+            gameManager = GameManager.instance; // 두 번째 안전 체크
+
+        if (gameManager != null)
+            gameManager.RegisterTimerManager(this);
+        else
+            Debug.LogError("[TimerManager] GameManager 인스턴스 없음");
+
         SetupButtonListeners();
         UpdateTimeDisplay();
         UpdateButtonStates();
@@ -187,12 +194,12 @@ public class TimerManager : MonoBehaviour
         // null 체크
         if (timeRecordUIPrefab == null)
         {
-            Debug.LogWarning("TimeRecordUI 프리팹 없음");
+            Debug.LogError("[TimerManager] TimeRecordUI 프리팹 없음");
             return;
         }
         if (recordsContent == null)
         {
-            Debug.LogWarning("recordsContent없음");
+            Debug.LogError("[TimerManager] recordsContent없음");
             return;
         }
 

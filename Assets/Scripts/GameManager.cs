@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
     {
         if (saveController == null)
         {
-            Debug.LogWarning("SaveController가 없습니다!");
+            Debug.LogWarning("[GameManager] SaveController가 없음");
             return;
         }
 
@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviour
     {
         if (inventoryManager == null)
         {
-            Debug.LogWarning("InventoryManager 참조가 없습니다!");
+            Debug.LogWarning("[GameManger] InventoryManager 참조가 없음");
             return;
         }
 
