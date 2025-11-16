@@ -36,14 +36,14 @@ public class TimerManager : MonoBehaviour
 
     private void Awake()
     {
-        if (GameManager.instance != null)
-            GameManager.instance.RegisterTimerManager(this);
+        gameManager = GameManager.instance;
+
+        if (gameManager != null)
+            gameManager.RegisterTimerManager(this);
     }
 
     private void Start()
     {
-        gameManager = GameManager.instance;
-
         SetupButtonListeners();
         UpdateTimeDisplay();
         UpdateButtonStates();

@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
     private SaveController saveController;
     private SaveData LoadedData;
 
+    private InventoryManager inventoryManager;
+    private TimerManager timerManager;
+
     /* ====== 재화 변수 ====== */
     [Header("재화")]
     [SerializeField]
@@ -17,15 +20,10 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int specialCoin = 0;
 
-    [Header("컴포넌트")]
-    [SerializeField]
-    private InventoryManager inventoryManager;
-    [SerializeField]
-    private TimerManager timerManager;
-
-    void Awake()
+    /* ====== 유니티 생명주기 ====== */
+    private void Awake()
     {
-        // 싱글톤 설정
+        /* 싱글톤 설정 */
         if (instance == null)
         {
             instance = this;
@@ -42,20 +40,23 @@ public class GameManager : MonoBehaviour
         saveController = GetComponent<SaveController>();
     }
 
-    void Start()
+    private void Start()
     {
-        //LoadGame();
+        
     }
 
+    /* ====== 매니저 등록 ====== */
     public void RegisterTimerManager(TimerManager manager)
     {
         timerManager = manager;
-
-        //// 저장된 데이터가 이미 로드된 상태라면 Timer UI 즉시 반영
-        //if (LoadedData != null)
-        //    timerManager.LoadRecords(LoadedData.savedRecords);
     }
 
+    public void RegisterInventoryManager(InventoryManager manager)
+    {
+        inventoryManager = manager;
+    }
+
+    /* ====== 저장/로드 관련 ====== */
     public void LoadGame()
     {
         if (saveController == null)
@@ -96,7 +97,7 @@ public class GameManager : MonoBehaviour
         saveController.Save(data);
     }
 
-    /* ====== 외부 호출 함수 ====== */
+    /* ====== 재화 관련 ====== */
     public int GetCoin() // 일반 코인 가져오기
     {
         return coin;
@@ -135,6 +136,7 @@ public class GameManager : MonoBehaviour
         SaveGame();
     }
 
+    /* ====== 인벤토리 관련 ====== */
     public void AddItemToInventory(RoomDecoItem newItem)
     {
         if (inventoryManager == null)

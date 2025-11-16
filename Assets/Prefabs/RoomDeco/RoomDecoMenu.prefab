@@ -2532,53 +2532,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &4867761101913737159
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2946391338089607182}
-  - component: {fileID: 1849095783049991260}
-  m_Layer: 0
-  m_Name: InventoryManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2946391338089607182
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4867761101913737159}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4757198572683237795}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1849095783049991260
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4867761101913737159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d72d0efcbe6e12c4b8e0f9375fdbf261, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InventoryManager
-  inventoryContent: {fileID: 4937644719913151753}
-  itemSlotPrefab: {fileID: 5392059993235839380, guid: 6accddc3aada3de4c946490f627c0fe6, type: 3}
-  itemList: []
 --- !u!1 &4888580828606441049
 GameObject:
   m_ObjectHideFlags: 0
@@ -3626,6 +3579,7 @@ GameObject:
   - component: {fileID: 4757198572683237795}
   - component: {fileID: 4886806735589992083}
   - component: {fileID: 506424121051192900}
+  - component: {fileID: 427545512314780610}
   m_Layer: 0
   m_Name: RoomDecoMenu
   m_TagString: Untagged
@@ -3648,7 +3602,6 @@ Transform:
   m_Children:
   - {fileID: 6985416772102780865}
   - {fileID: 4690662916881460790}
-  - {fileID: 2946391338089607182}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4886806735589992083
@@ -3694,6 +3647,21 @@ MonoBehaviour:
   - {fileID: 3925423316655327029, guid: ce9b437e547fdf94db324f20a459e718, type: 3}
   - {fileID: 8106412539819301540, guid: b49b57449fcecba418edd444d4adb83c, type: 3}
   - {fileID: 6416989634251939068, guid: 833570794741fab42ad869c95a4e4cdd, type: 3}
+--- !u!114 &427545512314780610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8773601076629193671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d72d0efcbe6e12c4b8e0f9375fdbf261, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryManager
+  inventoryContent: {fileID: 4937644719913151753}
+  itemSlotPrefab: {fileID: 5392059993235839380, guid: 6accddc3aada3de4c946490f627c0fe6, type: 3}
+  itemList: []
 --- !u!1 &9117188040428267195
 GameObject:
   m_ObjectHideFlags: 0

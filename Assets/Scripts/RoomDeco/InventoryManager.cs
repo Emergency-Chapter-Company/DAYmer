@@ -5,12 +5,25 @@ using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
+    /* ====== 객체 변수 ====== */
+    private GameManager gameManager;
+
+    /* ====== UI 컴포넌트 ====== */
     [Header("UI References")]
     [SerializeField] private Transform inventoryContent;
     [SerializeField] private GameObject itemSlotPrefab;
 
+    /* ====== 아이템 리스트 ====== */
     [Header("Inventory Items")]
     [SerializeField] private List<RoomDecoItem> itemList = new List<RoomDecoItem>();
+
+    private void Awake()
+    {
+        gameManager = GameManager.instance;
+
+        if (gameManager != null)
+            gameManager.RegisterInventoryManager(this);
+    }
 
     private void Start()
     {

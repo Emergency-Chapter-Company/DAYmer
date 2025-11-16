@@ -26,7 +26,7 @@ public class StoreManager : MonoBehaviour
         exitButton.onClick.AddListener(CloseStore);
 
         gameManager = GameManager.instance;
-        inventoryManager = GetComponentInChildren<InventoryManager>();
+        inventoryManager = GetComponent<InventoryManager>();
 
         storePanel.SetActive(false);
         exitButton.gameObject.SetActive(false);
