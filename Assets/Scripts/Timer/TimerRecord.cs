@@ -29,9 +29,13 @@ public class TimeRecord
     }
 
     // 기록 정보를 문자열로 변환
-    public override string ToString()
+    //public override string ToString()
+    //{
+    //    return $"{recordTime} - {recordDate:yyyy/MM/dd HH:mm:ss}";
+    //}
+    public string GetRecordDateString()
     {
-        return $"{recordTime} - {recordDate:yyyy/MM/dd HH:mm:ss}";
+        return recordDate.ToString("yyyy/MM/dd HH:mm:ss");
     }
 
     // 기록된 시간 문자열 가져오기

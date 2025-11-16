@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3784666986067338954}
   - component: {fileID: 288007910699296109}
+  - component: {fileID: 1008752458378997744}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -44,5 +45,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2deece8545ae444bbbf5fcb54a36312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  normalCoin: 0
+  coin: 0
   specialCoin: 0
+  inventoryManager: {fileID: 0}
+--- !u!114 &1008752458378997744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9093774683992098439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4a320992dbeb6847a6670f1eb3b5ef6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveController

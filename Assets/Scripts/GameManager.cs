@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
     /* ====== 싱글톤 변수 ====== */
     public static GameManager instance = null; // 싱글톤 변수
 
+    /* ====== 컴포넌트 ====== */
+    private SaveController saveController;
+
     /* ====== 재화 변수 ====== */
     [Header("재화")]
     [SerializeField]
@@ -13,9 +16,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int specialCoin = 0;
 
-    [Header("아이템")]
+    [Header("컴포넌트")]
     [SerializeField]
     private InventoryManager inventoryManager;
+    [SerializeField]
+    private TimerManager timerManager;
 
     void Awake()
     {
@@ -36,12 +41,52 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        /* 초기 재화 설정 */
-        coin = 0;
-        specialCoin = 0;
+        saveController = GetComponent<SaveController>();
+
+        LoadGame();
     }
 
-    /* ====== 재화 관련 함수 ====== */
+    public void LoadGame()
+    {
+        if (saveController == null)
+        {
+            Debug.LogWarning("SaveController가 없습니다!");
+            return;
+        }
+
+        SaveData data = saveController.Load();
+
+        /* 저장된 데이터 반영 */
+        coin = data.coin;
+        specialCoin = data.specialCoin;
+
+        if (timerManager != null)
+            timerManager.LoadRecords(data.savedRecords);
+
+        Debug.Log("게임 데이터 로드 완료");
+    }
+
+    public void SaveGame()
+    {
+        if (saveController == null)
+            return;
+
+        SaveData data = new SaveData();
+
+        // 현재 상태 저장
+        data.coin = coin;
+        data.specialCoin = specialCoin;
+
+        // 시간 기록 저장
+        if (timerManager != null)
+        {
+            data.savedRecords = timerManager.GetRecordData();
+        }
+
+        saveController.Save(data);
+    }
+
+    /* ====== 외부 호출 함수 ====== */
     public int GetCoin() // 일반 코인 가져오기
     {
         return coin;
@@ -50,6 +95,7 @@ public class GameManager : MonoBehaviour
     public void AddCoin(int amount) // 일반 코인 추가
     {
         coin += amount;
+        SaveGame();
     }
 
     public void SubtractCoin(int amount) // 일반 코인 차감
@@ -57,6 +103,7 @@ public class GameManager : MonoBehaviour
         coin -= amount;
         if (coin < 0)
             coin = 0;
+        SaveGame();
     }
 
     public int GetSpecialCoin() // 스페셜 코인 가져오기
@@ -67,6 +114,7 @@ public class GameManager : MonoBehaviour
     public void AddSpecialcoin(int amount) // 스페셜 코인 추가
     {
         specialCoin += amount;
+        SaveGame();
     }
 
     public void SubtractSpecialCoin(int amount) // 스페셜 코인 차감
@@ -74,6 +122,7 @@ public class GameManager : MonoBehaviour
         specialCoin -= amount;
         if (specialCoin < 0)
             specialCoin = 0;
+        SaveGame();
     }
 
     public void AddItemToInventory(RoomDecoItem newItem)

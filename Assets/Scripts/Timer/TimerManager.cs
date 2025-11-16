@@ -30,7 +30,7 @@ public class TimerManager : MonoBehaviour
     [SerializeField] private GameObject timeRecordUIPrefab; // TimeRecordUI 프리팹
     [SerializeField] private Button clearAllButton;         // 전체 기록 삭제 버튼
 
-    /* TimeRecord 변수 */
+    /* ====== TimeRecord 변수 ====== */
     [Header("코인 획득 시간")]
     [SerializeField] private int timePerCoin = 60;          // 1코인 획득에 필요한 시간(초)
 
@@ -115,6 +115,8 @@ public class TimerManager : MonoBehaviour
 
                 // UI에 기록 추가
                 AddRecordToUI(newRecord);
+
+                gameManager.SaveGame();
             }
 
             // 타이머 리셋
@@ -234,6 +236,8 @@ public class TimerManager : MonoBehaviour
 
         // 번호 재정렬
         RefreshRecordNumbers();
+
+        gameManager.SaveGame();
     }
 
     // 기록 전체 삭제
@@ -254,6 +258,8 @@ public class TimerManager : MonoBehaviour
             }
         }
         recordUIList.Clear(); // UI 리스트에서 모두 제거
+
+        gameManager.SaveGame();
 
         Debug.Log("=== 전체 UI 기록 삭제 ===");
         Debug.Log($"UI 기록 수: {recordUIList.Count}");
@@ -306,5 +312,34 @@ public class TimerManager : MonoBehaviour
             gameManager.AddCoin(coin);
             Debug.Log($"{coin} 코인 추가");
         }
+    }
+
+    public void LoadRecords(List<TimeRecordData> loadedData)
+    {
+        timeRecordList.Clear();
+        recordUIList.Clear();
+
+        foreach (var data in loadedData)
+        {
+            TimeRecord record = new TimeRecord(data.totalSeconds);
+            timeRecordList.Add(record);
+            AddRecordToUI(record);
+        }
+    }
+
+    public List<TimeRecordData> GetRecordData()
+    {
+        List<TimeRecordData> result = new List<TimeRecordData>();
+
+        foreach (var record in timeRecordList)
+        {
+            result.Add(new TimeRecordData
+            {
+                totalSeconds = record.GetTotalSeconds(),
+                recordedDate = record.GetRecordTime()
+            });
+        }
+
+        return result;
     }
 }
