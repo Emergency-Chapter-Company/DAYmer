@@ -37,8 +37,6 @@ public class TimerManager : MonoBehaviour
     private void Awake()
     {
         gameManager = GameManager.instance;
-
-        
     }
 
     private void Start()

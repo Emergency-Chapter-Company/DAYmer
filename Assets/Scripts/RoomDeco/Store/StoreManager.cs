@@ -28,6 +28,8 @@ public class StoreManager : MonoBehaviour
         gameManager = GameManager.instance;
         inventoryManager = GetComponent<InventoryManager>();
 
+        gameManager.RegisterInventoryManager(inventoryManager);
+
         storePanel.SetActive(false);
         exitButton.gameObject.SetActive(false);
     }
@@ -117,5 +119,10 @@ public class StoreManager : MonoBehaviour
         {
             Debug.Log("코인이 부족합니다!");
         }
+    }
+
+    public RoomDecoItem GetItemByID(int id)
+    {
+        return storeItems.Find(item => item.GetItemID() == id);
     }
 }

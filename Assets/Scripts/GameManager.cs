@@ -40,11 +40,6 @@ public class GameManager : MonoBehaviour
         saveController = GetComponent<SaveController>();
     }
 
-    private void Start()
-    {
-        
-    }
-
     /* ====== 매니저 등록 ====== */
     public void RegisterTimerManager(TimerManager manager)
     {
@@ -74,6 +69,9 @@ public class GameManager : MonoBehaviour
         if (timerManager != null)
             timerManager.LoadRecords(LoadedData.savedTimeRecords);
 
+        if (inventoryManager != null)
+            inventoryManager.RestoreInventory(LoadedData.ownedItemIDs);
+
         Debug.Log("게임 데이터 로드 완료");
         Debug.Log($"코인: {coin}, 스페셜 코인: {specialCoin}");
     }
@@ -88,12 +86,12 @@ public class GameManager : MonoBehaviour
         // 현재 상태 저장
         data.coin = coin;
         data.specialCoin = specialCoin;
-
-        // 시간 기록 저장
-        if (timerManager != null)
-        {
+        
+        if (timerManager != null) // 시간 기록 저장
             data.savedTimeRecords = timerManager.GetRecordData();
-        }
+
+        if (inventoryManager != null) // 인벤토리 저장
+            data.ownedItemIDs = inventoryManager.GetOwnedItemIDs();
 
         saveController.Save(data);
     }
@@ -147,6 +145,7 @@ public class GameManager : MonoBehaviour
         }
 
         inventoryManager.AddItem(newItem);
+        SaveGame();
         Debug.Log($"[GameManager] 인벤토리에 {newItem.GetItemName()} 추가됨");
     }
 }

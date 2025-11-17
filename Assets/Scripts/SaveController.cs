@@ -10,6 +10,8 @@ public class SaveData
 
     // 저장용 TimeRecord 데이터 리스트
     public List<TimeRecordData> savedTimeRecords = new List<TimeRecordData>();
+
+    public List<int> ownedItemIDs = new List<int>();
 }
 
 [System.Serializable]
