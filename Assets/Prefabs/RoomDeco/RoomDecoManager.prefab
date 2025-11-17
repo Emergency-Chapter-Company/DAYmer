@@ -3581,7 +3581,7 @@ GameObject:
   - component: {fileID: 506424121051192900}
   - component: {fileID: 427545512314780610}
   m_Layer: 0
-  m_Name: RoomDecoMenu
+  m_Name: RoomDecoManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3661,7 +3661,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryManager
   inventoryContent: {fileID: 4937644719913151753}
   itemSlotPrefab: {fileID: 5392059993235839380, guid: 6accddc3aada3de4c946490f627c0fe6, type: 3}
-  itemList: []
+  ownedItemList: []
 --- !u!1 &9117188040428267195
 GameObject:
   m_ObjectHideFlags: 0

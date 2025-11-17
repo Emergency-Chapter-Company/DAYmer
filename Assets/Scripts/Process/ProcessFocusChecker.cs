@@ -34,14 +34,24 @@ public class ProcessFocusChecker : MonoBehaviour
     private Vector2 lastMousePos;
     private float lastInputTime;
     private float lastActiveTime;
-    [SerializeField, Range(0.1f, 5f)] private float inputActiveDuration = 1.0f;
-    [SerializeField, Range(10f, 120f)] private float graceDuration = 60f; // 1분 유예 시간
+    [SerializeField, Range(0.1f, 5f)]
+    private float inputActiveDuration = 1.0f;
+    [SerializeField, Range(10f, 120f)]
+    private float graceDuration = 60f; // 1분 유예 시간
 
     /* ====== UI ====== */
     [Header("UI 표시")]
-    [SerializeField] private Image focusIndicator; // 포커스 상태 불빛
-    [SerializeField] private Image inputIndicator; // 입력 감지 불빛
-    [SerializeField] private Image workIndicator;  // 작업 상태 불빛 (추가)
+    [SerializeField]
+    private Image focusIndicator; // 포커스 상태 불빛
+    [SerializeField]
+    private Image inputIndicator; // 입력 감지 불빛
+    [SerializeField]
+    private Image workIndicator;  // 작업 상태 불빛 (추가)
+
+    /* ====== 컴포넌트 ====== */
+    [Header("컴포넌트")]
+    [SerializeField]
+    private TimerManager timerManager;
 
     /* ====== 상태 정의 ====== */
     private enum WorkState { Working, IdleGrace, NotWorking }
@@ -54,14 +64,14 @@ public class ProcessFocusChecker : MonoBehaviour
 
         if (proc == null)
         {
-            UnityEngine.Debug.LogWarning("⚠️ 대상 프로세스가 null입니다. 감시 불가.");
+            UnityEngine.Debug.LogWarning("[ProcessFocusChecker] ⚠️ 대상 프로세스가 null입니다. 감시 불가.");
             SetIndicatorColor(focusIndicator, Color.gray);
             SetIndicatorColor(inputIndicator, Color.gray);
             SetIndicatorColor(workIndicator, Color.gray);
         }
         else
         {
-            UnityEngine.Debug.Log($"🎯 프로세스 감시 시작: {proc.ProcessName} (PID {proc.Id})");
+            UnityEngine.Debug.Log($"[ProcessFocusChecker] 🎯 프로세스 감시 시작: {proc.ProcessName} (PID {proc.Id})");
             SetIndicatorColor(focusIndicator, Color.gray);
             SetIndicatorColor(inputIndicator, Color.gray);
             SetIndicatorColor(workIndicator, Color.gray);
@@ -90,8 +100,8 @@ public class ProcessFocusChecker : MonoBehaviour
         {
             lastFocusState = isFocused;
             UnityEngine.Debug.Log(isFocused
-                ? $"🟢 '{targetProcess.ProcessName}' 창이 포커스됨!"
-                : $"⚪ '{targetProcess.ProcessName}' 창이 포커스 해제됨.");
+                ? $"[ProcessFocusChecker] 🟢 '{targetProcess.ProcessName}' 창이 포커스됨!"
+                : $"[ProcessFocusChecker] ⚪ '{targetProcess.ProcessName}' 창이 포커스 해제됨.");
 
             SetIndicatorColor(focusIndicator, isFocused ? Color.cyan : Color.gray);
         }
@@ -118,6 +128,11 @@ public class ProcessFocusChecker : MonoBehaviour
             // 실제 작업 중
             lastActiveTime = now;
             SetWorkState(WorkState.Working);
+
+            if (timerManager != null)
+                timerManager.AutoResume();  // 자동 재개
+            else
+                UnityEngine.Debug.LogWarning("[ProcessFocusChecker] ⚠️ TimerManager 컴포넌트가 할당되지 않음.");
         }
         else if (now - lastActiveTime < graceDuration)
         {
@@ -128,6 +143,11 @@ public class ProcessFocusChecker : MonoBehaviour
         {
             // 완전히 비활동
             SetWorkState(WorkState.NotWorking);
+
+            if (timerManager != null)
+                timerManager.AutoPause();   // 자동 정지
+            else
+                UnityEngine.Debug.LogWarning("[ProcessFocusChecker] ⚠️ TimerManager 컴포넌트가 할당되지 않음.");
         }
     }
 
@@ -141,15 +161,15 @@ public class ProcessFocusChecker : MonoBehaviour
         {
             case WorkState.Working:
                 SetIndicatorColor(workIndicator, Color.green); // 작업 중 → 파랑
-                UnityEngine.Debug.Log("💼 작업 중");
+                UnityEngine.Debug.Log("[ProcessFocusChecker] 💼 작업 중");
                 break;
             case WorkState.IdleGrace:
                 SetIndicatorColor(workIndicator, Color.yellow); // 유예 상태 → 노랑
-                UnityEngine.Debug.Log("⏳ 유예 상태 (1분 이내 비활동)");
+                UnityEngine.Debug.Log("[ProcessFocusChecker] ⏳ 유예 상태 (1분 이내 비활동)");
                 break;
             case WorkState.NotWorking:
                 SetIndicatorColor(workIndicator, Color.red); // 비활동 → 빨강
-                UnityEngine.Debug.Log("🟥 작업 안 함 (1분 이상 비활동)");
+                UnityEngine.Debug.Log("[ProcessFocusChecker] 🟥 작업 안 함 (1분 이상 비활동)");
                 break;
         }
     }

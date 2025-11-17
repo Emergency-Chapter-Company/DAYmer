@@ -81,8 +81,8 @@ public class GameManager : MonoBehaviour
         if (roomDecoEdit != null)
             roomDecoEdit.LoadRoomState(LoadedData.placedItems);
 
-        Debug.Log("게임 데이터 로드 완료");
-        Debug.Log($"코인: {coin}, 스페셜 코인: {specialCoin}");
+        Debug.Log("[GameManager] 게임 데이터 로드 완료");
+        Debug.Log($"[GameManager] 코인: {coin}, 스페셜 코인: {specialCoin}");
     }
 
     public void SaveGame()
