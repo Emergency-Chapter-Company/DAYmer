@@ -8,6 +8,11 @@ public class GameManager : MonoBehaviour
 
     /* ====== 컴포넌트 ====== */
     private SaveController saveController;
+    private SaveData LoadedData;
+
+    private InventoryManager inventoryManager;
+    private TimerManager timerManager;
+    private RoomDecoEdit roomDecoEdit;
 
     /* ====== 재화 변수 ====== */
     [Header("재화")]
@@ -16,15 +21,10 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int specialCoin = 0;
 
-    [Header("컴포넌트")]
-    [SerializeField]
-    private InventoryManager inventoryManager;
-    [SerializeField]
-    private TimerManager timerManager;
-
-    void Awake()
+    /* ====== 유니티 생명주기 ====== */
+    private void Awake()
     {
-        // 싱글톤 설정
+        /* 싱글톤 설정 */
         if (instance == null)
         {
             instance = this;
@@ -37,33 +37,52 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-    }
 
-    void Start()
-    {
         saveController = GetComponent<SaveController>();
-
-        LoadGame();
     }
 
+    /* ====== 매니저 등록 ====== */
+    public void RegisterTimerManager(TimerManager manager)
+    {
+        timerManager = manager;
+    }
+
+    public void RegisterInventoryManager(InventoryManager manager)
+    {
+        inventoryManager = manager;
+    }
+
+    public void RegisterRoomDecoEdit(RoomDecoEdit edit)
+    {
+        roomDecoEdit = edit;
+    }
+
+    /* ====== 저장/로드 관련 ====== */
     public void LoadGame()
     {
         if (saveController == null)
         {
-            Debug.LogWarning("SaveController가 없습니다!");
+            Debug.LogWarning("[GameManager] SaveController가 없음");
             return;
         }
 
-        SaveData data = saveController.Load();
+        LoadedData = saveController.Load();
 
         /* 저장된 데이터 반영 */
-        coin = data.coin;
-        specialCoin = data.specialCoin;
+        coin = LoadedData.coin;
+        specialCoin = LoadedData.specialCoin;
 
         if (timerManager != null)
-            timerManager.LoadRecords(data.savedRecords);
+            timerManager.LoadRecords(LoadedData.savedTimeRecords);
+
+        if (inventoryManager != null)
+            inventoryManager.RestoreInventory(LoadedData.ownedItemIDs);
+
+        if (roomDecoEdit != null)
+            roomDecoEdit.LoadRoomState(LoadedData.placedItems);
 
         Debug.Log("게임 데이터 로드 완료");
+        Debug.Log($"코인: {coin}, 스페셜 코인: {specialCoin}");
     }
 
     public void SaveGame()
@@ -76,17 +95,20 @@ public class GameManager : MonoBehaviour
         // 현재 상태 저장
         data.coin = coin;
         data.specialCoin = specialCoin;
+        
+        if (timerManager != null) // 시간 기록 저장
+            data.savedTimeRecords = timerManager.GetRecordData();
 
-        // 시간 기록 저장
-        if (timerManager != null)
-        {
-            data.savedRecords = timerManager.GetRecordData();
-        }
+        if (inventoryManager != null) // 인벤토리 저장
+            data.ownedItemIDs = inventoryManager.GetOwnedItemIDs();
+
+        if (roomDecoEdit != null) // 배치된 아이템 저장
+            data.placedItems = roomDecoEdit.GetRoomStateForSave();
 
         saveController.Save(data);
     }
 
-    /* ====== 외부 호출 함수 ====== */
+    /* ====== 재화 관련 ====== */
     public int GetCoin() // 일반 코인 가져오기
     {
         return coin;
@@ -125,15 +147,17 @@ public class GameManager : MonoBehaviour
         SaveGame();
     }
 
+    /* ====== 인벤토리 관련 ====== */
     public void AddItemToInventory(RoomDecoItem newItem)
     {
         if (inventoryManager == null)
         {
-            Debug.LogWarning("InventoryManager 참조가 없습니다!");
+            Debug.LogWarning("[GameManger] InventoryManager 참조가 없음");
             return;
         }
 
         inventoryManager.AddItem(newItem);
+        SaveGame();
         Debug.Log($"[GameManager] 인벤토리에 {newItem.GetItemName()} 추가됨");
     }
 }

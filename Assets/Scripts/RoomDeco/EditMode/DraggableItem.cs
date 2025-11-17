@@ -28,7 +28,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         // 이 부분은 지워도 되는데 일단 드래그로 컴포넌트 지정하는 거 혹시 오류 생길까봐 남겨는 둠
         // 근데 지워도 될 것 같긴 해
         // 지울까? 말까? 어카지
-        editModeManager = FindObjectOfType<RoomDecoEdit>();
+        editModeManager = FindAnyObjectByType<RoomDecoEdit>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)

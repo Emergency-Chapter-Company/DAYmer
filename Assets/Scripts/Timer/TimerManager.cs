@@ -34,9 +34,20 @@ public class TimerManager : MonoBehaviour
     [Header("코인 획득 시간")]
     [SerializeField] private int timePerCoin = 60;          // 1코인 획득에 필요한 시간(초)
 
-    private void Start()
+    private void Awake()
     {
         gameManager = GameManager.instance;
+    }
+
+    private void Start()
+    {
+        if (gameManager == null)
+            gameManager = GameManager.instance; // 두 번째 안전 체크
+
+        if (gameManager != null)
+            gameManager.RegisterTimerManager(this);
+        else
+            Debug.LogError("[TimerManager] GameManager 인스턴스 없음");
 
         SetupButtonListeners();
         UpdateTimeDisplay();
@@ -179,9 +190,14 @@ public class TimerManager : MonoBehaviour
     private void AddRecordToUI(TimeRecord recordedTIme)
     {
         // null 체크
-        if (timeRecordUIPrefab == null || recordsContent == null)
+        if (timeRecordUIPrefab == null)
         {
-            Debug.LogWarning("TimeRecordUI 프리팹 또는 Content가 연결되지 않았습니다!");
+            Debug.LogError("[TimerManager] TimeRecordUI 프리팹 없음");
+            return;
+        }
+        if (recordsContent == null)
+        {
+            Debug.LogError("[TimerManager] recordsContent없음");
             return;
         }
 
