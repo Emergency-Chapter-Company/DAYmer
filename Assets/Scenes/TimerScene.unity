@@ -433,11 +433,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8436141192202675599, guid: d303760eecc341c4e91e56f68cf6b5c7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1005.3909
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8436141192202675599, guid: d303760eecc341c4e91e56f68cf6b5c7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 539.2912
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8436141192202675599, guid: d303760eecc341c4e91e56f68cf6b5c7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -476,6 +476,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d303760eecc341c4e91e56f68cf6b5c7, type: 3}
+--- !u!114 &1284429369 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5562061591147721848, guid: 4969e8525b1ac26409c432faf4d55bf0, type: 3}
+  m_PrefabInstance: {fileID: 3740979549138617554}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39e7e6fa432a05841ac2c1291f755e88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProcessFocusChecker
 --- !u!114 &2023272947 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3093748815386423252, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}
@@ -501,8 +512,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2256541492338556934, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00079345703
+      value: -0.000030517578
       objectReference: {fileID: 0}
+    - target: {fileID: 3093748815386423252, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}
+      propertyPath: processFocusChecker
+      value: 
+      objectReference: {fileID: 1284429369}
     - target: {fileID: 3187163546721880177, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -541,6 +556,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3187163546721880177, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4137050945467656649, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4137050945467656649, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4137050945467656649, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4576586032615714765, guid: 758bf4d70108a854c825a9baf4dc8fb2, type: 3}

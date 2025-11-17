@@ -1187,10 +1187,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProcessFocusChecker
   inputActiveDuration: 1
-  graceDuration: 60
+  graceDuration: 10
   focusIndicator: {fileID: 6256651123663037587}
   inputIndicator: {fileID: 8189588873277434769}
   workIndicator: {fileID: 292475817535232012}
+  timerManager: {fileID: 0}
 --- !u!1 &4816497214166556080
 GameObject:
   m_ObjectHideFlags: 0

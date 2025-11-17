@@ -826,7 +826,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -172, y: -0.00021362305}
+  m_AnchoredPosition: {x: -172, y: -0.00079345703}
   m_SizeDelta: {x: 344, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3497704431691347431
@@ -1442,6 +1442,7 @@ MonoBehaviour:
   timeRecordUIPrefab: {fileID: 6197717188936728688, guid: fba80aacb8c04d24ab6352a4b886c95e, type: 3}
   clearAllButton: {fileID: 396821145630928251}
   timePerCoin: 60
+  processFocusChecker: {fileID: 0}
 --- !u!1 &8038069375912512878
 GameObject:
   m_ObjectHideFlags: 0

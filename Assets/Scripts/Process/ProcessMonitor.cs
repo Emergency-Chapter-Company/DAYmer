@@ -112,7 +112,7 @@ public class ProcessMonitor : MonoBehaviour
 
     public void RefreshProcessList()
     {
-        UnityEngine.Debug.Log("🔄 프로세스 목록 새로고침 (현재 열려있는 창 기준 + 화/블랙리스트)");
+        UnityEngine.Debug.Log("[ProcessMonitor] 🔄 프로세스 목록 새로고침 (현재 열려있는 창 기준 + 화/블랙리스트)");
 
         allProcesses = Process.GetProcesses().ToList();
         visibleProcesses = new List<Process>();
@@ -261,15 +261,15 @@ public class ProcessMonitor : MonoBehaviour
             .Where(p => p.ProcessName == procName)
             .ToList();
 
-        UnityEngine.Debug.Log($"✅ 선택됨: {displayName} ({procName}), {procGroup.Count}개 인스턴스");
+        UnityEngine.Debug.Log($"[ProcessMonitor] ✅ 선택됨: {displayName} ({procName}), {procGroup.Count}개 인스턴스");
 
         foreach (var p in procGroup)
-            UnityEngine.Debug.Log($" - PID: {p.Id}");
+            UnityEngine.Debug.Log($"[ProcessMonitor]  - PID: {p.Id}");
 
         // 첫 번째 프로세스를 감시 대상으로 설정
         if (focusCheckerComp != null && procGroup.Count > 0)
             focusCheckerComp.SetTargetProcess(procGroup[0]);
         else
-            UnityEngine.Debug.LogWarning("⚠️ ProcessFocusChecker 컴포넌트가 할당되지 않았습니다.");
+            UnityEngine.Debug.LogWarning("[ProcessMonitor] ⚠️ ProcessFocusChecker 컴포넌트가 할당되지 않았습니다.");
     }
 }
