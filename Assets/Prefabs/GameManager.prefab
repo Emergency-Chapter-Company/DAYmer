@@ -47,7 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   coin: 0
   specialCoin: 0
-  inventoryManager: {fileID: 0}
 --- !u!114 &1008752458378997744
 MonoBehaviour:
   m_ObjectHideFlags: 0
