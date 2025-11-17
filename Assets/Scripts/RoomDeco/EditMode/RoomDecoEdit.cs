@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class RoomDecoEdit : MonoBehaviour
 {
+    /* ====== 객체 변수 ====== */
+    private GameManager gameManager;
+
     /* ====== 편집 모드 상태 변수 ====== */
     private RoomDecoState currentState = new RoomDecoState();
     private RoomDecoState backupState = null;
@@ -32,6 +35,11 @@ public class RoomDecoEdit : MonoBehaviour
     [Header("Room Management")]
     [SerializeField] private Transform roomContainer; //아이템들이 배치될 부모 오브젝트
 
+    private void Awake()
+    {
+        gameManager = GameManager.instance;
+    }
+
     private void Start()
     {
         /* 버튼 리스너 등록 */
@@ -41,10 +49,19 @@ public class RoomDecoEdit : MonoBehaviour
         resetButton.onClick.AddListener(OnResetButtonClicked);
         deleteButton.onClick.AddListener(OnDeleteButtonClicked);
 
-        // 초기 상태 설정 : 편집 모드 비활성화
+        /* 초기 상태 설정 : 편집 모드 비활성화 */
         inventoryPanel.SetActive(false);
         editModeUI.SetActive(false);
         deleteButton.interactable = false;   // 삭제버튼 초기 비활성화
+
+        /* GameManager에 자신 등록 */
+        if (gameManager == null)
+            gameManager = GameManager.instance; // 두 번째 안전 체크
+
+        if (gameManager != null)
+            gameManager.RegisterRoomDecoEdit(this);
+        else
+            Debug.LogError("[RoomDecoEdit] GameManager 인스턴스 없음");
     }
 
     private void Update()
@@ -250,7 +267,8 @@ public class RoomDecoEdit : MonoBehaviour
     private void OnCancelButtonClicked()
     {
         Debug.Log("편집 모드 취소 버튼이 클릭되었습니다.");
-        // 이전 상태로 상대 복원
+
+        /* 이전 상태로 상대 복원 */
         RestoreBackupState();
         ExitEditMode();
     }
@@ -259,8 +277,10 @@ public class RoomDecoEdit : MonoBehaviour
     private void OnConfirmButtonClicked()
     {
         Debug.Log("편집 모드 확인 버튼이 클릭되었습니다.");
-        // 현재상태 저장 기능 추가예정
+
+        /* 현재 상태 저장 */
         ApplyCurrentState();
+        GameManager.instance.SaveGame();
         ExitEditMode();
     }
 
@@ -324,4 +344,51 @@ public class RoomDecoEdit : MonoBehaviour
     //    currentPlacedObjects.Add(item);
     //}
 
+    public List<PlacedItemSaveData> GetRoomStateForSave()
+    {
+        List<PlacedItemSaveData> result = new();
+
+        foreach (var obj in currentPlacedItemList)
+        {
+            var item = obj.GetComponent<RoomDecoItem>();
+            if (item == null) continue;
+
+            result.Add(new PlacedItemSaveData()
+            {
+                itemID = item.GetItemID(),
+                position = obj.transform.position,
+                rotation = obj.transform.rotation
+            });
+        }
+
+        return result;
+    }
+
+    public void LoadRoomState(List<PlacedItemSaveData> loaded)
+    {
+        if (loaded == null) return;
+
+        // 기존 배치 초기화
+        foreach (var obj in currentPlacedItemList)
+            Destroy(obj);
+
+        currentPlacedItemList.Clear();
+
+        var storeManager = GetComponent<StoreManager>();
+
+        foreach (var saved in loaded)
+        {
+            RoomDecoItem prefab = storeManager.GetItemByID(saved.itemID);
+            if (prefab == null)
+            {
+                Debug.LogWarning($"로드 실패: itemID {saved.itemID} 찾을 수 없음");
+                continue;
+            }
+
+            GameObject obj = Instantiate(prefab.gameObject, saved.position, saved.rotation, roomContainer);
+            AddPlacedItem(obj);
+        }
+
+        ApplyCurrentState();
+    }
 }

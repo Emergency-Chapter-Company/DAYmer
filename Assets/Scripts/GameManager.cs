@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     private InventoryManager inventoryManager;
     private TimerManager timerManager;
+    private RoomDecoEdit roomDecoEdit;
 
     /* ====== 재화 변수 ====== */
     [Header("재화")]
@@ -51,6 +52,11 @@ public class GameManager : MonoBehaviour
         inventoryManager = manager;
     }
 
+    public void RegisterRoomDecoEdit(RoomDecoEdit edit)
+    {
+        roomDecoEdit = edit;
+    }
+
     /* ====== 저장/로드 관련 ====== */
     public void LoadGame()
     {
@@ -72,6 +78,9 @@ public class GameManager : MonoBehaviour
         if (inventoryManager != null)
             inventoryManager.RestoreInventory(LoadedData.ownedItemIDs);
 
+        if (roomDecoEdit != null)
+            roomDecoEdit.LoadRoomState(LoadedData.placedItems);
+
         Debug.Log("게임 데이터 로드 완료");
         Debug.Log($"코인: {coin}, 스페셜 코인: {specialCoin}");
     }
@@ -92,6 +101,9 @@ public class GameManager : MonoBehaviour
 
         if (inventoryManager != null) // 인벤토리 저장
             data.ownedItemIDs = inventoryManager.GetOwnedItemIDs();
+
+        if (roomDecoEdit != null) // 배치된 아이템 저장
+            data.placedItems = roomDecoEdit.GetRoomStateForSave();
 
         saveController.Save(data);
     }

@@ -8,10 +8,10 @@ public class SaveData
     public int coin;
     public int specialCoin;
 
-    // 저장용 TimeRecord 데이터 리스트
-    public List<TimeRecordData> savedTimeRecords = new List<TimeRecordData>();
-
-    public List<int> ownedItemIDs = new List<int>();
+    /* 데이터 리스트 */
+    public List<TimeRecordData> savedTimeRecords = new List<TimeRecordData>();      // TimeRecordData 참조
+    public List<int> ownedItemIDs = new List<int>();                                // 인벤토리 아이템 ID 리스트
+    public List<PlacedItemSaveData> placedItems = new List<PlacedItemSaveData>();   // 배치된 아이템 데이터 리스트
 }
 
 [System.Serializable]
@@ -19,6 +19,14 @@ public class TimeRecordData
 {
     public float totalSeconds;
     public string recordedDate;
+}
+
+[System.Serializable]
+public class PlacedItemSaveData
+{
+    public int itemID;
+    public Vector3 position;
+    public Quaternion rotation;
 }
 
 public class SaveController : MonoBehaviour
