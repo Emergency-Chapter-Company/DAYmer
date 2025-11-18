@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -21,6 +22,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int specialCoin = 0;
 
+    /* ====== UI 변수 ====== */
+    [Header("UI")]
+    [SerializeField]
+    private TMP_Text coinText;
+
     /* ====== 유니티 생명주기 ====== */
     private void Awake()
     {
@@ -40,6 +46,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        if (coinText == null)
+            Debug.LogWarning("[GameManager] coinText가 할당되지 않음");
+
         if (LoadedData == null)
             LoadGame();
     }
@@ -81,6 +90,8 @@ public class GameManager : MonoBehaviour
 
         // 현재 씬에 존재하는 매니저들에게 데이터 적용
         TryApplyLoadedData();
+
+        UpdateCoinUI();
 
         Debug.Log("[GameManager] 게임 데이터 로드 완료");
         Debug.Log($"[GameManager] 코인: {coin}, 스페셜 코인: {specialCoin}");
@@ -129,9 +140,17 @@ public class GameManager : MonoBehaviour
         // 방 꾸미기
         if (roomDecoEdit != null)
             roomDecoEdit.LoadRoomState(LoadedData.placedItems);
+
+        UpdateCoinUI();
     }
 
     /* ====== 재화 관련 ====== */
+    private void UpdateCoinUI()
+    {
+        if (coinText != null)
+            coinText.text = $"{coin} Coin";
+    }
+
     public int GetCoin() // 일반 코인 가져오기
     {
         return coin;
@@ -141,6 +160,7 @@ public class GameManager : MonoBehaviour
     {
         coin += amount;
         SaveGame();
+        UpdateCoinUI();
     }
 
     public void SubtractCoin(int amount) // 일반 코인 차감
@@ -149,6 +169,7 @@ public class GameManager : MonoBehaviour
         if (coin < 0)
             coin = 0;
         SaveGame();
+        UpdateCoinUI();
     }
 
     public int GetSpecialCoin() // 스페셜 코인 가져오기
