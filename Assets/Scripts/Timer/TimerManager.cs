@@ -404,7 +404,7 @@ public class TimerManager : MonoBehaviour
 
         foreach (var data in loadedData)
         {
-            TimeRecord record = new TimeRecord(data.totalSeconds);
+            TimeRecord record = new TimeRecord(data.totalSeconds, timePerCoin);
             timeRecordList.Add(record);
             AddRecordToUI(record);
         }
