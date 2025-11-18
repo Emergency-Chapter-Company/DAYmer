@@ -30,31 +30,37 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (instance != this)
         {
-            Destroy(GameManager.instance.gameObject);
-
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(gameObject);
         }
 
         saveController = GetComponent<SaveController>();
+    }
+
+    private void Start()
+    {
+        if (LoadedData == null)
+            LoadGame();
     }
 
     /* ====== 매니저 등록 ====== */
     public void RegisterTimerManager(TimerManager manager)
     {
         timerManager = manager;
+        TryApplyLoadedData();
     }
 
     public void RegisterInventoryManager(InventoryManager manager)
     {
         inventoryManager = manager;
+        TryApplyLoadedData();
     }
 
     public void RegisterRoomDecoEdit(RoomDecoEdit edit)
     {
         roomDecoEdit = edit;
+        TryApplyLoadedData();
     }
 
     /* ====== 저장/로드 관련 ====== */
@@ -66,20 +72,15 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        // 세이브 파일에서 항상 최신 데이터 읽어옴
         LoadedData = saveController.Load();
 
-        /* 저장된 데이터 반영 */
+        // 저장된 데이터 반영
         coin = LoadedData.coin;
         specialCoin = LoadedData.specialCoin;
 
-        if (timerManager != null)
-            timerManager.LoadRecords(LoadedData.savedTimeRecords);
-
-        if (inventoryManager != null)
-            inventoryManager.RestoreInventory(LoadedData.ownedItemIDs);
-
-        if (roomDecoEdit != null)
-            roomDecoEdit.LoadRoomState(LoadedData.placedItems);
+        // 현재 씬에 존재하는 매니저들에게 데이터 적용
+        TryApplyLoadedData();
 
         Debug.Log("[GameManager] 게임 데이터 로드 완료");
         Debug.Log($"[GameManager] 코인: {coin}, 스페셜 코인: {specialCoin}");
@@ -90,7 +91,8 @@ public class GameManager : MonoBehaviour
         if (saveController == null)
             return;
 
-        SaveData data = new SaveData();
+        // 기존 데이터 불러오기 (없으면 새로 생성됨)
+        SaveData data = saveController.Load();
 
         // 현재 상태 저장
         data.coin = coin;
@@ -106,6 +108,27 @@ public class GameManager : MonoBehaviour
             data.placedItems = roomDecoEdit.GetRoomStateForSave();
 
         saveController.Save(data);
+
+        // 메모리에도 최신 상태 유지
+        LoadedData = data;
+    }
+
+    private void TryApplyLoadedData()
+    {
+        // 저장 데이터가 없으면 아무것도 안 함
+        if (LoadedData == null) return;
+
+        // 타이머
+        if (timerManager != null)
+            timerManager.LoadRecords(LoadedData.savedTimeRecords);
+
+        // 인벤토리
+        if (inventoryManager != null)
+            inventoryManager.RestoreInventory(LoadedData.ownedItemIDs);
+
+        // 방 꾸미기
+        if (roomDecoEdit != null)
+            roomDecoEdit.LoadRoomState(LoadedData.placedItems);
     }
 
     /* ====== 재화 관련 ====== */
