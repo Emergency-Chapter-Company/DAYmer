@@ -1,6 +1,5 @@
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 // 아이템 배치 시스템
 
