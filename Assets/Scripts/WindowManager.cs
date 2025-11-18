@@ -40,9 +40,9 @@ public class WindowManager : MonoBehaviour
 
     [Header("씬 이름 설정")]
     [SerializeField]
-    private string timerSceneName = "WindowTestScene";
+    private string timerSceneName = "TimerScene";
     [SerializeField]
-    private string roomSceneName = "WindowChangeTestScene";
+    private string roomSceneName = "RoomScene";
 
     void Awake()
     {

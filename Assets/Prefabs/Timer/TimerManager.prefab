@@ -826,8 +826,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -172, y: -0.000030517578}
-  m_SizeDelta: {x: 344, y: 30}
+  m_AnchoredPosition: {x: -172, y: -0.00079345703}
+  m_SizeDelta: {x: 344, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3497704431691347431
 MonoBehaviour:
@@ -1085,7 +1085,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3994117460365432686
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1383,7 +1383,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8473602593155038544}
   m_HandleRect: {fileID: 4576586032615714765}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1442,6 +1442,7 @@ MonoBehaviour:
   timeRecordUIPrefab: {fileID: 6197717188936728688, guid: fba80aacb8c04d24ab6352a4b886c95e, type: 3}
   clearAllButton: {fileID: 396821145630928251}
   timePerCoin: 60
+  processFocusChecker: {fileID: 0}
 --- !u!1 &8038069375912512878
 GameObject:
   m_ObjectHideFlags: 0
@@ -1871,8 +1872,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -706, y: 0}
-  m_SizeDelta: {x: 380, y: 580}
+  m_AnchoredPosition: {x: -756, y: 0}
+  m_SizeDelta: {x: 364.8137, y: 265}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3260967852681142434
 CanvasRenderer:

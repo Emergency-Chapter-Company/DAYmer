@@ -18,21 +18,35 @@ public class TimerManager : MonoBehaviour
     private List<TimeRecord> timeRecordList = new List<TimeRecord>();   // 실제 데이터 리스트
     private List<GameObject> recordUIList = new List<GameObject>();     // UI 프리팹 리스트
 
-    /* ====== UI 컴포넌트 ====== */
+    /* ====== UI ====== */
     [Header("타이머 UI")]
-    [SerializeField] private TextMeshProUGUI timeText;      // 시간 표시 텍스트 (00:00:00)
-    [SerializeField] private Button startButton;            // 시작 버튼
-    [SerializeField] private Button pauseButton;            // 일시정지 버튼
-    [SerializeField] private Button stopButton;             // 정지 및 기록 버튼
+    [SerializeField]
+    private TextMeshProUGUI timeText;      // 시간 표시 텍스트 (00:00:00)
+    [SerializeField]
+    private Button startButton;            // 시작 버튼
+    [SerializeField]
+    private Button pauseButton;            // 일시정지 버튼
+    [SerializeField]
+    private Button stopButton;             // 정지 및 기록 버튼
 
     [Header("기록 UI")]
-    [SerializeField] private Transform recordsContent;      // 기록이 추가될 Content
-    [SerializeField] private GameObject timeRecordUIPrefab; // TimeRecordUI 프리팹
-    [SerializeField] private Button clearAllButton;         // 전체 기록 삭제 버튼
+    [SerializeField]
+    private Transform recordsContent;      // 기록이 추가될 Content
+    [SerializeField]
+    private GameObject timeRecordUIPrefab; // TimeRecordUI 프리팹
+    [SerializeField]
+    private Button clearAllButton;         // 전체 기록 삭제 버튼
 
     /* ====== TimeRecord 변수 ====== */
     [Header("코인 획득 시간")]
-    [SerializeField] private int timePerCoin = 60;          // 1코인 획득에 필요한 시간(초)
+    [SerializeField]
+    private int timePerCoin = 60;          // 1코인 획득에 필요한 시간(초)
+
+    /* ====== 컴포넌트 ====== */
+    [Header("컴포넌트")]
+    [SerializeField]
+    private ProcessFocusChecker processFocusChecker;
+
 
     private void Awake()
     {
@@ -49,6 +63,9 @@ public class TimerManager : MonoBehaviour
         else
             Debug.LogError("[TimerManager] GameManager 인스턴스 없음");
 
+        if (processFocusChecker == null)
+            Debug.LogWarning("[TimerManager] ⚠ ProcessFocusChecker가 연결되지 않음");
+
         SetupButtonListeners();
         UpdateTimeDisplay();
         UpdateButtonStates();
@@ -57,11 +74,18 @@ public class TimerManager : MonoBehaviour
     private void Update()
     {
         // 타이머가 실행 중이고 일시정지되지 않았을 때만 시간 증가
-        if (isRunning && !isPaused)
+        if (!isRunning || isPaused)
+            return;
+
+        // 프로세스 선택 안됐으면 실행 중이라도 멈춤
+        if (processFocusChecker != null && !processFocusChecker.GetIsProcessSelected())
         {
-            currentTime += Time.deltaTime;
-            UpdateTimeDisplay();
+            AutoPause();
+            return;
         }
+
+        currentTime += Time.deltaTime;
+        UpdateTimeDisplay();
     }
 
     /// UI 초기화
@@ -76,24 +100,29 @@ public class TimerManager : MonoBehaviour
 
         if (stopButton != null)
             stopButton.onClick.AddListener(OnStopButtonClick);
-
     }
 
     // 시작 버튼 클릭 이벤트
     private void OnStartButtonClick()
     {
+        if (processFocusChecker != null && !processFocusChecker.GetIsProcessSelected())
+        {
+            Debug.LogWarning("[TimerManager] 타이머 시작 실패: 대상 프로세스가 포커스되지 않음");
+            return;
+        }
+
         if (!isRunning)
         {
             // 처음 시작
             isRunning = true;
             isPaused = false;
-            Debug.Log("타이머 시작");
+            Debug.Log("[TimerManager] 타이머 시작");
         }
         else if (isPaused)
         {
             // 일시정지 상태에서 재개
             isPaused = false;
-            Debug.Log("타이머 재개");
+            Debug.Log("[TimerManager] 타이머 재개");
         }
 
         UpdateButtonStates();
@@ -105,7 +134,7 @@ public class TimerManager : MonoBehaviour
         if (isRunning && !isPaused)
         {
             isPaused = true;
-            Debug.Log("타이머 일시정지");
+            Debug.Log("[TimerManager] 타이머 일시정지");
             UpdateButtonStates();
         }
     }
@@ -122,7 +151,7 @@ public class TimerManager : MonoBehaviour
                 timeRecordList.Add(newRecord);
 
                 // 기록을 콘솔에 출력
-                Debug.Log($"기록 저장: {newRecord.GetRecordTime()}");
+                Debug.Log($"[TimerManager] 기록 저장: {newRecord.GetRecordTime()}");
 
                 // UI에 기록 추가
                 AddRecordToUI(newRecord);
@@ -135,6 +164,26 @@ public class TimerManager : MonoBehaviour
         }
     }
 
+    public void AutoPause()
+    {
+        if (isRunning && !isPaused)
+        {
+            isPaused = true;
+            UpdateButtonStates();
+            Debug.Log("[TimerManager] 자동 일시정지");
+        }
+    }
+
+    public void AutoResume()
+    {
+        if (isRunning && isPaused)
+        {
+            isPaused = false;
+            UpdateButtonStates();
+            Debug.Log("[TimerManager] 자동 재개");
+        }
+    }
+
     // 타이머 리셋
     private void ResetStopwatch()
     {
@@ -143,7 +192,7 @@ public class TimerManager : MonoBehaviour
         isPaused = false;
         UpdateTimeDisplay();
         UpdateButtonStates();
-        Debug.Log("타이머 리셋");
+        Debug.Log("[TimerManager] 타이머 리셋");
     }
 
     // 시간 표시 업데이트 (00:00:00 형식)
@@ -164,15 +213,23 @@ public class TimerManager : MonoBehaviour
     {
         if (startButton != null)
         {
-            // 시작 버튼: 실행 중이 아니거나 일시정지 상태일 때 활성화
-            startButton.interactable = !isRunning || isPaused;
+            if (processFocusChecker != null)
+            {
+                // 시작 버튼: 프로세스가 선택되고, 실행 중이 아니거나 일시정지 상태일 때 활성화
+                startButton.interactable = processFocusChecker.GetIsProcessSelected() && (!isRunning/* || isPaused*/);
+            }
+            else
+            {
+                // 시작 버튼: 실행 중이 아니거나 일시정지 상태일 때 활성화
+                startButton.interactable = !isRunning/* || isPaused*/;
+            }
         }
 
-        if (pauseButton != null)
-        {
-            // 일시정지 버튼: 실행 중이고 일시정지되지 않았을 때만 활성화
-            pauseButton.interactable = isRunning && !isPaused;
-        }
+        //if (pauseButton != null)
+        //{
+        //    // 일시정지 버튼: 실행 중이고 일시정지되지 않았을 때만 활성화
+        //    pauseButton.interactable = isRunning && !isPaused;
+        //}
 
         if (stopButton != null)
         {
@@ -182,6 +239,8 @@ public class TimerManager : MonoBehaviour
 
         if (clearAllButton != null)
         {
+            // 전체 기록 삭제 버튼: 기록이 하나라도 있을 때만 활성화
+            clearAllButton.onClick.RemoveAllListeners();
             clearAllButton.onClick.AddListener(OnClearAllButtonClick);
         }
     }
@@ -224,7 +283,7 @@ public class TimerManager : MonoBehaviour
             getCoins.text = $"{recordedTIme.GetCoins()} Coin";
         }
 
-        Debug.Log($"UI에 기록 추가됨: #{timeRecordList.Count}");
+        Debug.Log($"[TimerManager] UI에 기록 추가됨: #{timeRecordList.Count}");
     }
 
     // 기록 개별 삭제
@@ -234,12 +293,12 @@ public class TimerManager : MonoBehaviour
         if (recordedTIme != null && timeRecordList.Contains(recordedTIme))
         {
             int index = timeRecordList.IndexOf(recordedTIme);
-            Debug.Log($"기록 #{index + 1} 삭제");
+            Debug.Log($"[TimerManager] 기록 #{index + 1} 삭제");
 
             TimeToCoins(recordedTIme.GetCoins()); // GameManager에 코인 추가
 
             timeRecordList.Remove(recordedTIme); // 실제 데이터에서 제거
-            Debug.Log($"남은 데이터 기록 수: {timeRecordList.Count}");
+            Debug.Log($"[TimerManager] 남은 데이터 기록 수: {timeRecordList.Count}");
         }
 
         /* UI에서 제거 */
@@ -247,7 +306,7 @@ public class TimerManager : MonoBehaviour
         {
             recordUIList.Remove(recordUIInstance); // UI 리스트에서 제거
             Destroy(recordUIInstance); // UI 오브젝트 파괴
-            Debug.Log($"남은 UI 기록 수: {recordUIList.Count}");
+            Debug.Log($"[TimerManager] 남은 UI 기록 수: {recordUIList.Count}");
         }
 
         // 번호 재정렬
@@ -277,10 +336,9 @@ public class TimerManager : MonoBehaviour
 
         gameManager.SaveGame();
 
-        Debug.Log("=== 전체 UI 기록 삭제 ===");
-        Debug.Log($"UI 기록 수: {recordUIList.Count}");
-        Debug.Log($"실제 데이터 기록 수: {timeRecordList.Count}");
-        Debug.Log("========================");
+        Debug.Log("[TimerManager] === 전체 UI 기록 삭제 ===");
+        Debug.Log($"[TimerManager] UI 기록 수: {recordUIList.Count}");
+        Debug.Log($"[TimerManager] 실제 데이터 기록 수: {timeRecordList.Count}");
     }
 
     // 기록 번호 재정렬
@@ -315,8 +373,8 @@ public class TimerManager : MonoBehaviour
     {
         if (Application.isEditor)
         {
-            GUI.Label(new Rect(10, 10, 300, 20), $"상태: {(isRunning ? (isPaused ? "일시정지" : "실행 중") : "정지")}");
-            GUI.Label(new Rect(10, 30, 300, 20), $"기록 수: {timeRecordList.Count}");
+            GUI.Label(new Rect(10, 10, 300, 20), $"[TimerManager] 상태: {(isRunning ? (isPaused ? "일시정지" : "실행 중") : "정지")}");
+            GUI.Label(new Rect(10, 30, 300, 20), $"[TimerManager] 기록 수: {timeRecordList.Count}");
         }
     }
 
@@ -326,7 +384,7 @@ public class TimerManager : MonoBehaviour
         if (gameManager != null)
         {
             gameManager.AddCoin(coin);
-            Debug.Log($"{coin} 코인 추가");
+            Debug.Log($"[TimerManager] {coin} 코인 추가");
         }
     }
 
@@ -357,5 +415,10 @@ public class TimerManager : MonoBehaviour
         }
 
         return result;
+    }
+
+    public void ForceRefreshButtons()
+    {
+        UpdateButtonStates();
     }
 }
