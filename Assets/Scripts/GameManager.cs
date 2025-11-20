@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,12 +9,14 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null; // 싱글톤 변수
 
     /* ====== 컴포넌트 ====== */
-    private SaveController saveController;
-    private SaveData LoadedData;
-
     private InventoryManager inventoryManager;
     private TimerManager timerManager;
     private RoomDecoEdit roomDecoEdit;
+    private SaveController saveController;
+    private SaveData LoadedData;
+
+    private TMP_Text coinText;
+    private Button sceneChangeButton;
 
     /* ====== 재화 변수 ====== */
     [Header("재화")]
@@ -21,11 +24,6 @@ public class GameManager : MonoBehaviour
     private int coin = 0;
     [SerializeField]
     private int specialCoin = 0;
-
-    /* ====== UI 변수 ====== */
-    [Header("UI")]
-    [SerializeField]
-    private TMP_Text coinText;
 
     /* ====== 유니티 생명주기 ====== */
     private void Awake()
@@ -46,9 +44,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if (coinText == null)
-            Debug.LogWarning("[GameManager] coinText가 할당되지 않음");
-
         if (LoadedData == null)
             LoadGame();
     }
@@ -70,6 +65,15 @@ public class GameManager : MonoBehaviour
     {
         roomDecoEdit = edit;
         TryApplyLoadedData();
+    }
+
+    public void RegisterIndividualSceneUIs(TMP_Text text, Button button)
+    {
+        coinText = text;
+        sceneChangeButton = button;
+
+        if (sceneChangeButton != null)
+            sceneChangeButton.onClick.AddListener(OnSceneChangeButtonClick);
     }
 
     /* ====== 저장/로드 관련 ====== */
@@ -149,6 +153,8 @@ public class GameManager : MonoBehaviour
     {
         if (coinText != null)
             coinText.text = $"{coin} Coin";
+        else
+            Debug.LogWarning("[GameManager] coinText가 할당되지 않음");
     }
 
     public int GetCoin() // 일반 코인 가져오기
@@ -203,5 +209,14 @@ public class GameManager : MonoBehaviour
         inventoryManager.AddItem(newItem);
         SaveGame();
         Debug.Log($"[GameManager] 인벤토리에 {newItem.GetItemName()} 추가됨");
+    }
+
+    /* ====== 씬 관련 ====== */
+    private void OnSceneChangeButtonClick()
+    {
+        if (WindowManager.instance == null)
+            Debug.LogWarning("[GameManager] WindowManager 참조가 없음");
+        else
+            WindowManager.instance.ChangeScene();
     }
 }
