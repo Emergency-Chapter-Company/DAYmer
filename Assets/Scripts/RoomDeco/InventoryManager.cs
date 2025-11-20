@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,9 @@ public class InventoryManager : MonoBehaviour
     /* ====== 객체 변수 ====== */
     private GameManager gameManager;
     private StoreManager storeManager;
+
+    /* ====== 상태 변수 ====== */
+    private bool inventoryRestored = false;
 
     /* ====== UI 컴포넌트 ====== */
     [Header("UI References")]
@@ -96,16 +100,33 @@ public class InventoryManager : MonoBehaviour
 
     public void RestoreInventory(List<int> savedIDs)
     {
+        if (inventoryRestored) return;
+
+        StartCoroutine(RestoreDelayed(savedIDs));
+    }
+
+    private IEnumerator RestoreDelayed(List<int> savedIDs)
+    {
+        // StoreManager, UI가 완전히 준비될때까지 기다림
+        yield return null;
+
+        if (storeManager == null)
+            storeManager = GetComponent<StoreManager>();
+
         ownedItemList.Clear();
 
-        // StoreManager가 가진 아이템 중 ID 일치하는 것만 가져옴 (중복 생성 X)
         foreach (var id in savedIDs)
         {
-            RoomDecoItem match = storeManager.GetItemByID(id);
+            RoomDecoItem match = storeManager != null ? storeManager.GetItemByID(id) : null;
             if (match != null)
                 ownedItemList.Add(match);
+            else
+                Debug.LogWarning($"[InventoryManager] 저장된 ID({id}) 아이템을 찾을 수 없음");
         }
 
         PopulateInventory();
+
+        inventoryRestored = true;
+        Debug.Log("[InventoryManager] 인벤토리 로드 완료");
     }
 }

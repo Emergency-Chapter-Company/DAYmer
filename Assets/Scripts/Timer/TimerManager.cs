@@ -142,6 +142,15 @@ public class TimerManager : MonoBehaviour
     // 정지 버튼 클릭 이벤트 (기록 저장 및 리셋)
     private void OnStopButtonClick()
     {
+        if (gameManager == null)
+        {
+            Debug.LogError("[TimerManager] ❌ Save 실패: GameManager가 null");
+        }
+        else
+        {
+            Debug.Log("[TimerManager] 🔍 Save 호출됨 → GameManager 존재 확인");
+        }
+
         if (isRunning)
         {
             // 현재 시간을 기록
@@ -395,7 +404,7 @@ public class TimerManager : MonoBehaviour
 
         foreach (var data in loadedData)
         {
-            TimeRecord record = new TimeRecord(data.totalSeconds);
+            TimeRecord record = new TimeRecord(data.totalSeconds, timePerCoin);
             timeRecordList.Add(record);
             AddRecordToUI(record);
         }

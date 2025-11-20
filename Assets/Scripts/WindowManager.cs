@@ -46,18 +46,15 @@ public class WindowManager : MonoBehaviour
 
     void Awake()
     {
-        // 싱글톤 설정
+        /* 싱글톤 설정 */
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (instance != this)
         {
-            Destroy(WindowManager.instance.gameObject);
-
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(gameObject);
         }
     }
 
@@ -73,7 +70,7 @@ public class WindowManager : MonoBehaviour
         // 씬 로드 후 항상 위 적용
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        StartCoroutine(LoadGameDelayed());
+        //StartCoroutine(LoadGameDelayed());
     }
 
     private void OnDisable()
@@ -136,12 +133,12 @@ public class WindowManager : MonoBehaviour
         }
     }
 
-    private IEnumerator LoadGameDelayed()
-    {
-        // 최소 한 프레임 UI 생성 기다림
-        yield return null;
-        yield return new WaitForEndOfFrame();
+    //private IEnumerator LoadGameDelayed()
+    //{
+    //    // 최소 한 프레임 UI 생성 기다림
+    //    yield return null;
+    //    yield return new WaitForEndOfFrame();
 
-        GameManager.instance.LoadGame();
-    }
+    //    GameManager.instance.LoadGame();
+    //}
 }

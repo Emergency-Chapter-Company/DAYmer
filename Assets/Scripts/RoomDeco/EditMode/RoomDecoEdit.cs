@@ -289,6 +289,13 @@ public class RoomDecoEdit : MonoBehaviour
     {
         currentPlacedItemList.Add(item);
 
+        // 콜라이더 없으면 자동 추가
+        if (item.GetComponent<Collider2D>() == null)
+        {
+            var col = item.AddComponent<BoxCollider2D>();
+            col.isTrigger = true;
+        }
+
         //PlacedItemController 추가
         if (item.GetComponent<PlacedItemController>() == null)
         {
