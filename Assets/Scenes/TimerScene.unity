@@ -485,7 +485,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8873510673904216129, guid: d303760eecc341c4e91e56f68cf6b5c7, type: 3}
       propertyPath: roomScreenY
-      value: 1000
+      value: 700
       objectReference: {fileID: 0}
     - target: {fileID: 8873510673904216129, guid: d303760eecc341c4e91e56f68cf6b5c7, type: 3}
       propertyPath: timerScreenX
